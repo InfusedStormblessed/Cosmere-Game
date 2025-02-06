@@ -95,7 +95,7 @@
 </head>
 
 <body>
-    <h1>Cosmere Adventure</h1>
+    <h1>Cosmere Adventure v3</h1>
     <p id="gameOutput">Welcome to your adventure! Select a character to begin.</p>
 
     <audio id="backgroundMusic" autoplay loop>
@@ -131,7 +131,7 @@
         <p>Choose a location to explore:</p>
         <button id="luthadelButton" style="display: none;">Luthadel</button>
         <button id="stormlandsButton">Stormlands</button>
-        <button id="rithmatistButton">Rithmatist's Academy</button>
+        <button id="rithmatistButton">Keep Venture</button>
         <button id="elendelButton" style="display: none;">Fellise</button>
         <button id="alethkarButton">Alethkar</button>
         <button id="urithiruButton">Urithiru</button>
@@ -167,7 +167,7 @@
 
         // Attacks for each character
         const attacks = {
-            Vin: ["Steel Swipe", "Iron Blast", "Copper Charm", "Atium Shadow", "Tin Enhancements", "Mistborn Assault", "God Metal Strike"],
+            Vin: ["Steel Swipe", "Iron Blast", "Copper Charm", "Atium Shadow", "Tin Enhancements", "Mistborn Assault"],
             Kaladin: ["Wind Slash", "Storm Slam", "Shield Bash", "Protective Shield", "Cleansing Storm", "Syl's Embrace", "Radiant Destruction"],
             Szeth: ["Honorblade Strike", "Windrunner's Fury", "Fury of the Honorblade", "Skybreaker's Visage", "Transcendent Blade", "Gift of the Stormfather"],
             Dalinar: ["Bondsmith's Wield", "Armored Charge", "Forging Strength", "Call of the Thrill", "Unyielding Resolve", "Blackthorn's Wrath"],
@@ -176,17 +176,26 @@
         // Unique Abilities
         const specialAbilities = {
             Vin: [
-                { name: "Allomantic Burst", description: "Unleash a powerful Allomantic energy burst.", bonusDamage: 15, unlockedAtLevel: 2 },
-                { name: "Atium Rush", description: "Burn the powerful metal, Atium, making yourself invincible for a time.", bonusDamage: 40, unlockedAtLevel: 5 },
+              { name: "Pewter Flame", description: "Flare Pewter and run into a nearby building, waiting for a chance to strike.", healAmount: 30, bonusDamage: 10, unlockedAtLevel: 1 },
+              { name: "Allomantic Burst", description: "Unleash a powerful Allomantic energy burst.", bonusDamage: 20, unlockedAtLevel: 3 },
+              { name: "Atium Rush", description: "Burn the powerful metal, Atium, making yourself invincible for a time.", bonusDamage: 30, unlockedAtLevel: 5 },
+              { name: "Supersonic Launch", description: "Burn Steel and Duralumin, then immediately flare Pewter, launching yourself at your opponent and incredible speeds.", bonusDamage: 50, unlockedAtLevel: 8 },
+              { name: "God Metal Stab", description: "Stab your opponent with a dagger made of Raysium, the God Metal of Odium, dealing massive damage.", bonusDamage: 75, unlockedAtLevel: 10 }
             ],
             Kaladin: [
-                { name: "Wave of Stormlight", description: "Generate a wave of Stormlight that damages and pushes back enemies.", bonusDamage: 20, unlockedAtLevel: 1 }
+                { name: "Wave of Stormlight", description: "Generate a wave of Stormlight that damages and pushes back enemies.", healAmount: 30, bonusDamage: 10, unlockedAtLevel: 1 },
+                { name: "Syl's Whirlwind", description: "Channel Syl to create a powerful whirlwind that deals extra damage.", bonusDamage: 25, unlockedAtLevel: 3 },
+                { name: "Windrunner Flight", description: "Fly into the air, then come crashing back down, hitting your opponent at speeds near Mach 3.", bonusDamage: 30, unlockedAtLevel: 5 },
+                { name: "Bridge Four", description: "Call for Bridge Four, bringing in an influx of troops, dealing tons of damage and leaving no opportunity to escape.", bonusDamage: 50, unlockedAtLevel: 8 },
+                { name: "Sylspear Strike", description: "Call in Syl as a Shardspear, then drive it through your opponent, almost always instantly killing them.", bonusDamage: 75, unlockedAtLevel: 10 },
             ],
             Szeth: [
-                { name: "Well of Ascension", description: "Attack with the power of the Honorblade, dealing devastating damage.", bonusDamage: 20, unlockedAtLevel: 1 }
+                { name: "Skybreaking", description: "Perform a small Skybreaking as you fly past your opponent, leaving a trail of flames behind you, and giving you time to recover.", healAmount: 30, bonusDamage: 10, unlockedAtLevel: 1 },
+                { name: "Voidlight Convergence", description: "Converge the powers of the Voidlight to strike with devastating force.", bonusDamage: 25, unlockedAtLevel: 3 },
             ],
             Dalinar: [
-                { name: "Bondsmith's Resolve", description: "Rally your strength to heal and bolster defenses.", healAmount: 20, unlockedAtLevel: 1 }
+                { name: "Bondsmith's Resolve", description: "Rally your strength to heal and bolster defenses.", healAmount: 20, unlockedAtLevel: 1 },
+                { name: "Unyielding Charge", description: "Unleash a powerful charge that trampling foes with might.", bonusDamage: 25, unlockedAtLevel: 3 },
             ]
         };
 
@@ -250,6 +259,7 @@
             document.getElementById("luthadelButton").style.display = isRosharan ? "none" : "block";
             document.getElementById("elendelButton").style.display = isRosharan ? "none" : "block";
             document.getElementById("scadrialButton").style.display = isRosharan ? "none" : "block";
+            document.getElementById("rithmatistButton").style.display = isRosharan ? "none" : "block";         
             document.getElementById("urithiruButton").style.display = isVin ? "none" : "block";
             document.getElementById("kholinarButton").style.display = isVin ? "none" : "block";
             document.getElementById("stormlandsButton").style.display = isVin ? "none" : "block";
@@ -267,9 +277,9 @@
                 "Shardbearer": { health: 90, damage: 20 },
                 "Parshendi": { health: 60, damage: 18 },
             },
-            "Rithmatist's Academy": {
-                "Rithmatist": { health: 80, damage: 15 },
-                "Animated Defender": { health: 70, damage: 12 },
+            "Keep Venture": {
+                "Venture Guard": { health: 80, damage: 15 },
+                "Steel Obligator": { health: 70, damage: 12 },
             },
             Fellise: {
                 "Nobleman": { health: 50, damage: 10 },
@@ -293,7 +303,7 @@
             },
             "Kredik Shaw": {
                 "Steel Inquisitor": { health: 100, damage: 12 },
-                "Benevolent Mistwraith": { health: 90, damage: 22 },
+                "The Lord Ruler": { health: 150, damage: 25 },
             }
         };
 
@@ -364,7 +374,7 @@
         // Location selection
         luthadelButton.addEventListener("click", () => startBattle("Luthadel"));
         stormlandsButton.addEventListener("click", () => startBattle("Stormlands"));
-        rithmatistButton.addEventListener("click", () => startBattle("Rithmatist's Academy"));
+        rithmatistButton.addEventListener("click", () => startBattle("Keep Venture"));
         elendelButton.addEventListener("click", () => startBattle("Fellise"));
         alethkarButton.addEventListener("click", () => startBattle("Alethkar"));
         urithiruButton.addEventListener("click", () => startBattle("Urithiru"));
@@ -430,7 +440,8 @@
         // Use Attack or Special Ability
         const useAttack = (attackName) => {
             if (currentEnemyHealth > 0) {
-                let damage = playerDamage; // Assuming all normal attacks do playerDamage
+                // Calculate random damage between 15 and 20
+                let damage = Math.floor(Math.random() * (20 - 15 + 1) + 15);
                 currentEnemyHealth -= damage;
                 document.getElementById("gameOutput").innerText += `\nYou used ${attackName} against ${currentEnemyType} for ${damage} damage.`;
                 updateHealthBars(); // Update health bars after attack
@@ -444,6 +455,14 @@
                 if (damage) {
                     currentEnemyHealth -= damage;
                     document.getElementById("gameOutput").innerText += `\nYou used ${ability.name} and dealt ${damage} extra damage to ${currentEnemyType}.`;
+                } 
+                if (ability.healAmount) {
+                    playerHealth += ability.healAmount;
+                    // Ensure player health does not exceed maximum
+                    if (playerHealth > 100) {
+                        playerHealth = 100;
+                    }
+                    document.getElementById("gameOutput").innerText += `\nYou used ${ability.name} and healed for ${ability.healAmount} health. Your health is now ${playerHealth}.`;
                 }
                 updateHealthBars(); // Update health bars after ability use
                 checkEnemyDefeated();
@@ -486,22 +505,32 @@
             postBattleChoices.style.display = "block"; // Show battle options directly after ignoring the NPC
         });
 
-        // Get Mistborn Lore
+        // Get Mistborn Lore - Updated for 6 sections
         function getMistbornLore() {
             const lore = [
-                "Did you know that Allomancers can consume metals to gain various powers? Vin was a true Mistborn who could use all allomantic metals.",
-                "The Mistborn can use steel and iron to fly through the air, giving them a unique advantage in battle.",
-                "Mistborn tales tell of how a single Mistborn could take on entire armies, using powerful Allomancy to their advantage."
+                "In the dark world of Scadrial, the Lord Ruler wields absolute power over the Final Empire, a society marked by a rigid caste system and perpetual ash-fall. While the nobility indulge in luxury, the skaa languish in poverty and oppression under the Lord Ruler's tyrannical reign, which has lasted for a thousand years. Yet, whispers of rebellion stir among the downtrodden, hinting at the possibility of change.",
+                "Amid this struggle, a young skaa named Vin discovers her Allomantic abilities and becomes embroiled in a revolutionary plot led by Kelsier, known as the Survivor of Hathsin. As she learns to harness her powers, Vin transforms from a street urchin into a key figure in the rebellion against the Lord Ruler. With their confrontation imminent, the fate of Scadrial hangs in the balance, poised between dark tyranny and the hope of a new dawn.",
+                "Following the events of the first book, Vin and her companions face the daunting challenge of establishing a new society in the wake of the Lord Ruler's defeat. As tensions rise among the various factions vying for power, Vin grapples with her role as a leader and her growing abilities as a Mistborn. The threat of an ancient evil looms, putting both her friends and the future of Scadrial at risk",
+                "Amid political intrigue, Vin discovers the existence of the Well of Ascension and the immense power it holds. As she navigates betrayal and conflict, she must decide whether to claim this power for herself or find a way to protect her people without losing her humanity. With the fate of the world hanging in the balance, Vin must confront her deepest fears and make a choice that could save or doom Scadrial.",
+                "The world teeters on the brink of destruction as Vin, Sazed, and a small group of companions navigate a complex web of prophecies, ancient civilizations, and the remnants of the Lord Ruler's power. With the catastrophic events known as the Cataclyms looming, Vin must come to terms with her destiny as the focal point of a world-ending prophecy.",
+                "Haunted by her own demons and struggling to maintain hope in the face of overwhelming despair, Vin joins forces with her friends to uncover the truth behind the Hero of Ages, a figure destined to save the world. Together, they must unravel the tangled threads of history, confront their own mortality, and make a final stand against the impending doom. As the world hurtles towards its apocalyptic fate, Vin and her companions must find a way to defy the prophecies and forge a new path for the future of Scadrial, no matter the cost."
             ];
             return lore[Math.floor(Math.random() * lore.length)];
         }
 
-        // Get Stormlight Lore
+        // Get Stormlight Lore - Updated for 10 sections
         function getStormlightLore() {
             const lore = [
                 "In Roshar, the power of Stormlight allows the Knights Radiant to perform incredible feats. Each order has unique abilities.",
                 "The Shattering was a pivotal event that shaped the entire Cosmere and led to many conflicts.",
-                "Spren are integral to the magic systems on Roshar. They form bonds with humans, granting them powers."
+                "Spren are integral to the magic systems on Roshar. They form bonds with humans, granting them powers.",
+                "The Oathpact was an ancient agreement to bind the Desolations and required oaths from the Knights Radiant.",
+                "Radiants draw power from their oaths, known as Ideals, which they must live by to maintain their abilities.",
+                "The ten orders of Knights Radiant each have unique forms of magic, often connected to different types of spren.",
+                "The Everstorm is a recent phenomenon that brings unpredictable chaos and challenges to the Alethi.",
+                "Dalinar Kholin, a significant character, seeks to unite the nations of Roshar against an impending threat.",
+                "The Unmade are ancient and powerful beings that threaten the world and have connections to the Voidbringers.",
+                "The Way of Kings introduces the concept of the bonds between humans and spren, illustrating how they influence each other."
             ];
             return lore[Math.floor(Math.random() * lore.length)];
         }
