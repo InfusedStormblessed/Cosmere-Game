@@ -1,0 +1,586 @@
+This is where I will keep the raw code to the game.  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cosmere Adventure</title>
+    <style>
+        /* Basic CSS styling to make the game look nicer */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000080;
+        }
+
+        h1 {
+            color: #ffffff;
+        }
+
+        #gameOutput {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #endGameButton {
+            background-color: #f44336;
+        }
+
+        #endGameButton:hover {
+            background-color: #e91e63;
+        }
+
+        #healthBars {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px;
+            font-weight: bold;
+        }
+
+        .health {
+            width: 200px;
+            height: 20px;
+            background-color: #ddd;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .health span {
+            height: 100%;
+            display: block;
+            border-radius: 5px;
+        }
+
+        #attackMenu {
+            display: none;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1000;
+        }
+
+        .attackOption {
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .attackOption:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Cosmere Adventure</h1>
+    <p id="gameOutput">Welcome to your adventure! Select a character to begin.</p>
+
+    <audio id="backgroundMusic" autoplay loop>
+        <source src="song.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="button-container">
+        <button id="characterSelectionButton">Character Selection</button>
+        <button id="exploreButton" disabled>Explore</button>
+        <button id="loadGameButton" disabled>Load Game</button>
+        <button id="saveGameButton" disabled>Save Game</button>
+        <button id="inventoryButton" disabled>Inventory</button>
+        <button id="endGameButton">End Game</button>
+    </div>
+
+    <div id="healthBars" style="display: none;">
+        <div id="playerHealthBar" class="health">
+            <span id="playerHealthSpan" style="background-color: green; width: 100%;"></span>
+        </div>
+        <div id="enemyHealthBar" class="health">
+            <span id="enemyHealthSpan" style="background-color: red; width: 100%;"></span>
+        </div>
+    </div>
+
+    <div id="attackMenu" style="display: none;">
+        <p>Select an attack:</p>
+        <div id="attackOptionsContainer"></div>
+        <button id="closeAttackMenuButton">Close</button>
+    </div>
+
+    <div id="locationSelection" style="display: none;">
+        <p>Choose a location to explore:</p>
+        <button id="luthadelButton" style="display: none;">Luthadel</button>
+        <button id="stormlandsButton">Stormlands</button>
+        <button id="rithmatistButton">Keep Venture</button>
+        <button id="elendelButton" style="display: none;">Fellise</button>
+        <button id="alethkarButton">Alethkar</button>
+        <button id="urithiruButton">Urithiru</button>
+        <button id="kholinarButton">Kholinar</button>
+        <button id="thaylenCityButton">Thaylen City</button>
+        <button id="scadrialButton" style="display: none;">Kredik Shaw</button>
+    </div>
+
+    <div id="postBattleChoices" style="display: none;">
+        <p>What do you do?</p>
+        <button id="attackButton">Attack</button>
+        <button id="defendButton">Defend</button>
+        <button id="specialButton">Use Special Ability</button>
+    </div>
+
+    <div id="npcInteraction" style="display: none;">
+        <p>You encounter an NPC! What do you want to do?</p>
+        <button id="talkButton">Talk</button>
+        <button id="ignoreButton">Ignore</button>
+    </div>
+
+    <script>
+        // Game variables
+        let player = null;
+        let playerHealth = 100;
+        let playerDamage = 0;
+        let playerDefence = 0;
+        let playerLevel = 1;
+        let playerGold = 10;
+        let currentEnemyHealth = null;
+        let currentEnemyType = "";
+        let playerInventory = [];
+
+        // Attacks for each character
+        const attacks = {
+            Vin: ["Steel Swipe", "Iron Blast", "Copper Charm", "Atium Shadow", "Tin Enhancements", "Mistborn Assault"],
+            Kaladin: ["Wind Slash", "Storm Slam", "Shield Bash", "Protective Shield", "Cleansing Storm", "Syl's Embrace", "Radiant Destruction"],
+            Szeth: ["Honorblade Strike", "Windrunner's Fury", "Fury of the Honorblade", "Skybreaker's Visage", "Transcendent Blade", "Gift of the Stormfather"],
+            Dalinar: ["Bondsmith's Wield", "Armored Charge", "Forging Strength", "Call of the Thrill", "Unyielding Resolve", "Blackthorn's Wrath"],
+        };
+
+        // Unique Abilities
+        const specialAbilities = {
+            Vin: [
+              { name: "Pewter Flame", description: "Flare Pewter and run into a nearby building, waiting for a chance to strike.", healAmount: 30, bonusDamage: 10, unlockedAtLevel: 1 },
+              { name: "Allomantic Burst", description: "Unleash a powerful Allomantic energy burst.", bonusDamage: 20, unlockedAtLevel: 3 },
+              { name: "Atium Rush", description: "Burn the powerful metal, Atium, making yourself invincible for a time.", bonusDamage: 30, unlockedAtLevel: 5 },
+              { name: "Supersonic Launch", description: "Burn Steel and Duralumin, then immediately flare Pewter, launching yourself at your opponent and incredible speeds.", bonusDamage: 50, unlockedAtLevel: 8 },
+              { name: "God Metal Stab", description: "Stab your opponent with a dagger made of Raysium, the God Metal of Odium, dealing massive damage.", bonusDamage: 75, unlockedAtLevel: 10 }
+            ],
+            Kaladin: [
+                { name: "Wave of Stormlight", description: "Generate a wave of Stormlight that damages and pushes back enemies.", healAmount: 30, bonusDamage: 10, unlockedAtLevel: 1 },
+                { name: "Syl's Whirlwind", description: "Channel Syl to create a powerful whirlwind that deals extra damage.", bonusDamage: 25, unlockedAtLevel: 3 },
+                { name: "Windrunner Flight", description: "Fly into the air, then come crashing back down, hitting your opponent at speeds near Mach 3.", bonusDamage: 30, unlockedAtLevel: 5 },
+                { name: "Bridge Four", description: "Call for Bridge Four, bringing in an influx of troops, dealing tons of damage and leaving no opportunity to escape.", bonusDamage: 50, unlockedAtLevel: 8 },
+                { name: "Sylspear Strike", description: "Call in Syl as a Shardspear, then drive it through your opponent, almost always instantly killing them.", bonusDamage: 75, unlockedAtLevel: 10 },
+            ],
+            Szeth: [
+                { name: "Skybreaking", description: "Perform a small Skybreaking as you fly past your opponent, leaving a trail of flames behind you, and giving you time to recover.", healAmount: 30, bonusDamage: 10, unlockedAtLevel: 1 },
+                { name: "Voidlight Convergence", description: "Converge the powers of the Voidlight to strike with devastating force.", bonusDamage: 25, unlockedAtLevel: 3 },
+            ],
+            Dalinar: [
+                { name: "Bondsmith's Resolve", description: "Rally your strength to heal and bolster defenses.", healAmount: 20, unlockedAtLevel: 1 },
+                { name: "Unyielding Charge", description: "Unleash a powerful charge that trampling foes with might.", bonusDamage: 25, unlockedAtLevel: 3 },
+            ]
+        };
+
+        // Check if the special ability is unlocked based on the player's level
+        const isSpecialAbilityUnlocked = (ability) => {
+            return playerLevel >= ability.unlockedAtLevel;
+        };
+
+        // Save/Load system
+        const saveGame = () => {
+            const gameData = {
+                player,
+                playerHealth,
+                playerDamage,
+                playerDefence,
+                playerLevel,
+                playerGold,
+                playerInventory
+            };
+            localStorage.setItem('savedGame', JSON.stringify(gameData));
+            document.getElementById("gameOutput").innerText = "Game saved successfully!";
+        };
+
+        const loadGame = () => {
+            const savedData = JSON.parse(localStorage.getItem('savedGame'));
+            if (savedData) {
+                Object.assign(window, savedData);
+                document.getElementById("gameOutput").innerText = "Game loaded successfully!";
+                updateDisplay();
+            } else {
+                document.getElementById("gameOutput").innerText = "No saved game found.";
+            }
+        };
+
+        const updateDisplay = () => {
+            document.getElementById("gameOutput").innerText = `Welcome back, ${player}! Your health: ${playerHealth}, Level: ${playerLevel}`;
+            exploreButton.disabled = false;
+            locationSelection.style.display = "none"; // Hide location selection until explored
+            postBattleChoices.style.display = "none"; // Hide battle options
+            inventoryButton.disabled = false;
+            updateHealthBars();
+        };
+
+        // Health bar update function
+        const updateHealthBars = () => {
+            const playerHealthPercentage = (playerHealth / 100) * 100;
+            document.getElementById('playerHealthSpan').style.width = `${playerHealthPercentage}%`;
+        
+            if (currentEnemyHealth) {
+                const enemyHealthPercentage = (currentEnemyHealth / 100) * 100; // Assuming max health is 100 for simplicity
+                document.getElementById('enemyHealthSpan').style.width = `${enemyHealthPercentage}%`;
+            }
+        };
+
+        // Check and set location buttons based on selected character
+        const updateLocationButtons = () => {
+            const isRosharan = ["Dalinar", "Kaladin", "Szeth"].includes(player);
+            const isVin = player === "Vin";
+
+            // Show/Hide relevant buttons
+            document.getElementById("luthadelButton").style.display = isRosharan ? "none" : "block";
+            document.getElementById("elendelButton").style.display = isRosharan ? "none" : "block";
+            document.getElementById("scadrialButton").style.display = isRosharan ? "none" : "block";
+            document.getElementById("rithmatistButton").style.display = isRosharan ? "none" : "block";         
+            document.getElementById("urithiruButton").style.display = isVin ? "none" : "block";
+            document.getElementById("kholinarButton").style.display = isVin ? "none" : "block";
+            document.getElementById("stormlandsButton").style.display = isVin ? "none" : "block";
+            document.getElementById("thaylenCityButton").style.display = isVin ? "none" : "block";
+            document.getElementById("alethkarButton").style.display = isVin ? "none" : "block";
+        };
+
+        // Enemies specific to locations
+        const enemies = {
+            Luthadel: {
+                "Steel Inquisitor": { health: 70, damage: 15 },
+                "Colossus": { health: 100, damage: 25 },
+            },
+            Stormlands: {
+                "Shardbearer": { health: 90, damage: 20 },
+                "Parshendi": { health: 60, damage: 18 },
+            },
+            "Keep Venture": {
+                "Venture Guard": { health: 80, damage: 15 },
+                "Steel Obligator": { health: 70, damage: 12 },
+            },
+            Fellise: {
+                "Nobleman": { health: 50, damage: 10 },
+                "Kandra": { health: 75, damage: 20 },
+            },
+            Alethkar: {
+                "Prisoner of War": { health: 60, damage: 12 },
+                "Shin Warrior": { health: 85, damage: 16 },
+            },
+            Urithiru: {
+                "Skybreaker": { health: 100, damage: 30 },
+                "Windrunner": { health: 95, damage: 25 },
+            },
+            Kholinar: {
+                "Fused": { health: 120, damage: 28 },
+                "Amaram's Soldiers": { health: 80, damage: 20 },
+            },
+            "Thaylen City": {
+                "Thaylen Merchant": { health: 50, damage: 14 },
+                "Thaylen Assassin": { health: 70, damage: 18 },
+            },
+            "Kredik Shaw": {
+                "Steel Inquisitor": { health: 100, damage: 12 },
+                "The Lord Ruler": { health: 150, damage: 25 },
+            }
+        };
+
+        // Save queries to HTML elements
+        const exploreButton = document.getElementById("exploreButton");
+        const characterSelectionButton = document.getElementById("characterSelectionButton");
+        const loadGameButton = document.getElementById("loadGameButton");
+        const saveGameButton = document.getElementById("saveGameButton");
+        const inventoryButton = document.getElementById("inventoryButton");
+        const endGameButton = document.getElementById("endGameButton");
+        const luthadelButton = document.getElementById("luthadelButton");
+        const stormlandsButton = document.getElementById("stormlandsButton");
+        const rithmatistButton = document.getElementById("rithmatistButton");
+        const elendelButton = document.getElementById("elendelButton");
+        const alethkarButton = document.getElementById("alethkarButton");
+        const urithiruButton = document.getElementById("urithiruButton");
+        const kholinarButton = document.getElementById("kholinarButton");
+        const thaylenCityButton = document.getElementById("thaylenCityButton");
+        const scadrialButton = document.getElementById("scadrialButton");
+        const attackButton = document.getElementById("attackButton");
+        const defendButton = document.getElementById("defendButton");
+        const specialButton = document.getElementById("specialButton");
+        const postBattleChoices = document.getElementById("postBattleChoices");
+        const locationSelection = document.getElementById("locationSelection");
+        const attackMenu = document.getElementById("attackMenu");
+        const attackOptionsContainer = document.getElementById("attackOptionsContainer");
+        const closeAttackMenuButton = document.getElementById("closeAttackMenuButton");
+        const talkButton = document.getElementById("talkButton");
+        const ignoreButton = document.getElementById("ignoreButton");
+        const npcInteraction = document.getElementById("npcInteraction");
+
+        // Character Selection
+        characterSelectionButton.addEventListener("click", () => {
+            const character = prompt("Choose your character: Vin (Mistborn), Kaladin (Windrunner), Szeth (Assassin in White), Dalinar (Bondsmith):").trim();
+            if (["Vin", "Kaladin", "Szeth", "Dalinar"].includes(character)) {
+                player = character;
+                playerDamage = character === "Vin" ? 15 : character === "Kaladin" ? 18 : character === "Szeth" ? 15 : 18;
+                playerDefence = character === "Vin" ? 5 : character === "Kaladin" ? 6 : character === "Szeth" ? 4 : 7;
+
+                // Enable other buttons after character selection
+                exploreButton.disabled = false;
+                loadGameButton.disabled = false;
+                saveGameButton.disabled = false;
+                inventoryButton.disabled = false;
+
+                document.getElementById("gameOutput").innerText = `You have chosen ${player}. Ready for adventure!`;
+                locationSelection.style.display = "none"; // Hide location selection until explored
+
+                // Update available locations based on character
+                updateLocationButtons();
+            } else {
+                document.getElementById("gameOutput").innerText = "Invalid character selection.";
+            }
+        });
+
+        // Save Game
+        saveGameButton.addEventListener("click", saveGame);
+
+        // Load Game
+        loadGameButton.addEventListener("click", loadGame);
+
+        // Explore Button
+        exploreButton.addEventListener("click", () => {
+            document.getElementById("gameOutput").innerText = "Select a location to explore.";
+            locationSelection.style.display = "block";
+        });
+
+        // Location selection
+        luthadelButton.addEventListener("click", () => startBattle("Luthadel"));
+        stormlandsButton.addEventListener("click", () => startBattle("Stormlands"));
+        rithmatistButton.addEventListener("click", () => startBattle("Keep Venture"));
+        elendelButton.addEventListener("click", () => startBattle("Fellise"));
+        alethkarButton.addEventListener("click", () => startBattle("Alethkar"));
+        urithiruButton.addEventListener("click", () => startBattle("Urithiru"));
+        kholinarButton.addEventListener("click", () => startBattle("Kholinar"));
+        thaylenCityButton.addEventListener("click", () => startBattle("Thaylen City"));
+        scadrialButton.addEventListener("click", () => startBattle("Kredik Shaw"));
+
+        // Start Battle
+        function startBattle(location) {
+            const enemyNames = Object.keys(enemies[location]);
+            const enemyName = enemyNames[Math.floor(Math.random() * enemyNames.length)];
+            currentEnemyHealth = enemies[location][enemyName].health;
+            currentEnemyType = enemyName;
+            document.getElementById("gameOutput").innerText = `You have entered ${location}. Prepare for battle against ${currentEnemyType}!`;
+
+            // Show health bars
+            document.getElementById('healthBars').style.display = 'flex';
+            updateHealthBars();
+
+            // 50% chance to encounter an NPC
+            if (Math.random() < 0.5) {
+                npcInteraction.style.display = "block";
+                const npcNamesVin = ["Breeze", "Ham", "Dockson", "Clubs"];
+                const npcNamesRoshar = ["Navani", "Lift", "Renarin", "The Sibling"];
+                const npcList = player === "Vin" ? npcNamesVin : npcNamesRoshar;
+                const npcName = npcList[Math.floor(Math.random() * npcList.length)];
+                document.getElementById("gameOutput").innerText += `\nYou encounter ${npcName}!`;
+            } else {
+                postBattleChoices.style.display = "block"; // Show battle options
+            }
+        }
+
+        // Show Attack Menu
+        const showAttackMenu = (isSpecial) => {
+            attackOptionsContainer.innerHTML = ""; // Clear previous options
+
+            const attackList = isSpecial ? specialAbilities[player].filter(ability => isSpecialAbilityUnlocked(ability)) : attacks[player];
+            attackList.forEach((attack) => {
+                const attackDiv = document.createElement("div");
+                attackDiv.className = "attackOption";
+                attackDiv.innerText = typeof attack === 'string' ? attack : attack.name;
+                attackDiv.onclick = () => {
+                    isSpecial ? useSpecialAbility(attack) : useAttack(attack);
+                    attackMenu.style.display = "none"; // Hide attack menu after use
+                };
+                attackOptionsContainer.appendChild(attackDiv);
+            });
+
+            attackMenu.style.display = "block"; // Show menu
+        };
+
+        // Attack Button
+        attackButton.addEventListener("click", () => showAttackMenu(false));
+
+        // Special Ability Button
+        specialButton.addEventListener("click", () => showAttackMenu(true));
+
+        // Close Attack Menu Button
+        closeAttackMenuButton.addEventListener("click", () => {
+            attackMenu.style.display = "none"; // Close the attack menu
+        });
+
+        // Use Attack or Special Ability
+        const useAttack = (attackName) => {
+            if (currentEnemyHealth > 0) {
+                // Calculate random damage between 15 and 20
+                let damage = Math.floor(Math.random() * (20 - 15 + 1) + 15);
+                currentEnemyHealth -= damage;
+                document.getElementById("gameOutput").innerText += `\nYou used ${attackName} against ${currentEnemyType} for ${damage} damage.`;
+                updateHealthBars(); // Update health bars after attack
+                checkEnemyDefeated();
+            }
+        };
+
+        const useSpecialAbility = (ability) => {
+            if (currentEnemyHealth > 0) {
+                let damage = ability.bonusDamage || 0;
+                if (damage) {
+                    currentEnemyHealth -= damage;
+                    document.getElementById("gameOutput").innerText += `\nYou used ${ability.name} and dealt ${damage} extra damage to ${currentEnemyType}.`;
+                } 
+                if (ability.healAmount) {
+                    playerHealth += ability.healAmount;
+                    // Ensure player health does not exceed maximum
+                    if (playerHealth > 100) {
+                        playerHealth = 100;
+                    }
+                    document.getElementById("gameOutput").innerText += `\nYou used ${ability.name} and healed for ${ability.healAmount} health. Your health is now ${playerHealth}.`;
+                }
+                updateHealthBars(); // Update health bars after ability use
+                checkEnemyDefeated();
+            }
+        };
+
+        // Check if enemy is defeated
+        const checkEnemyDefeated = () => {
+            if (currentEnemyHealth <= 0) {
+                document.getElementById("gameOutput").innerText += `\nYou defeated ${currentEnemyType}!`;
+                playerLevel++; // Level up for defeating an enemy
+                postBattleChoices.style.display = "none"; // Hide battle options
+            } else {
+                enemyTurn(); // Enemy attacks back if still alive
+            }
+        };
+
+        // Enemy Turn
+        const enemyTurn = () => {
+            const enemyDamage = Math.floor(Math.random() * (15 - 10 + 1)) + 10; // Random damage between 10 and 15
+            playerHealth -= enemyDamage;
+            document.getElementById("gameOutput").innerText += `\n${currentEnemyType} counterattacked you for ${enemyDamage} damage. Your health is now ${playerHealth}.`;
+            updateHealthBars(); // Update health after enemy attack
+            if (playerHealth <= 0) {
+                endGame("You have been defeated by " + currentEnemyType + "... Game over.");
+            }
+        };
+
+        // NPC Interaction
+        talkButton.addEventListener("click", () => {
+            const npcLore = player === "Vin" ? getMistbornLore() : getStormlightLore();
+            document.getElementById("gameOutput").innerText += `\nNPC: "${npcLore}"`;
+            npcInteraction.style.display = "none";
+            postBattleChoices.style.display = "block"; // Show battle options after talking to NPC
+        });
+
+        ignoreButton.addEventListener("click", () => {
+            document.getElementById("gameOutput").innerText += "\nYou chose to ignore the NPC.";
+            npcInteraction.style.display = "none";
+            postBattleChoices.style.display = "block"; // Show battle options directly after ignoring the NPC
+        });
+
+        // Get Mistborn Lore - Updated for 6 sections
+        function getMistbornLore() {
+            const lore = [
+                "In the dark world of Scadrial, the Lord Ruler wields absolute power over the Final Empire, a society marked by a rigid caste system and perpetual ash-fall. While the nobility indulge in luxury, the skaa languish in poverty and oppression under the Lord Ruler's tyrannical reign, which has lasted for a thousand years. Yet, whispers of rebellion stir among the downtrodden, hinting at the possibility of change.",
+                "Amid this struggle, a young skaa named Vin discovers her Allomantic abilities and becomes embroiled in a revolutionary plot led by Kelsier, known as the Survivor of Hathsin. As she learns to harness her powers, Vin transforms from a street urchin into a key figure in the rebellion against the Lord Ruler. With their confrontation imminent, the fate of Scadrial hangs in the balance, poised between dark tyranny and the hope of a new dawn.",
+                "Following the events of the first book, Vin and her companions face the daunting challenge of establishing a new society in the wake of the Lord Ruler's defeat. As tensions rise among the various factions vying for power, Vin grapples with her role as a leader and her growing abilities as a Mistborn. The threat of an ancient evil looms, putting both her friends and the future of Scadrial at risk",
+                "Amid political intrigue, Vin discovers the existence of the Well of Ascension and the immense power it holds. As she navigates betrayal and conflict, she must decide whether to claim this power for herself or find a way to protect her people without losing her humanity. With the fate of the world hanging in the balance, Vin must confront her deepest fears and make a choice that could save or doom Scadrial.",
+                "The world teeters on the brink of destruction as Vin, Sazed, and a small group of companions navigate a complex web of prophecies, ancient civilizations, and the remnants of the Lord Ruler's power. With the catastrophic events known as the Cataclyms looming, Vin must come to terms with her destiny as the focal point of a world-ending prophecy.",
+                "Haunted by her own demons and struggling to maintain hope in the face of overwhelming despair, Vin joins forces with her friends to uncover the truth behind the Hero of Ages, a figure destined to save the world. Together, they must unravel the tangled threads of history, confront their own mortality, and make a final stand against the impending doom. As the world hurtles towards its apocalyptic fate, Vin and her companions must find a way to defy the prophecies and forge a new path for the future of Scadrial, no matter the cost."
+            ];
+            return lore[Math.floor(Math.random() * lore.length)];
+        }
+
+        // Get Stormlight Lore - Updated for 10 sections
+        function getStormlightLore() {
+            const lore = [
+                "In Roshar, the power of Stormlight allows the Knights Radiant to perform incredible feats. Each order has unique abilities.",
+                "The Shattering was a pivotal event that shaped the entire Cosmere and led to many conflicts.",
+                "Spren are integral to the magic systems on Roshar. They form bonds with humans, granting them powers.",
+                "The Oathpact was an ancient agreement to bind the Desolations and required oaths from the Knights Radiant.",
+                "Radiants draw power from their oaths, known as Ideals, which they must live by to maintain their abilities.",
+                "The ten orders of Knights Radiant each have unique forms of magic, often connected to different types of spren.",
+                "The Everstorm is a recent phenomenon that brings unpredictable chaos and challenges to the Alethi.",
+                "Dalinar Kholin, a significant character, seeks to unite the nations of Roshar against an impending threat.",
+                "The Unmade are ancient and powerful beings that threaten the world and have connections to the Voidbringers.",
+                "The Way of Kings introduces the concept of the bonds between humans and spren, illustrating how they influence each other."
+            ];
+            return lore[Math.floor(Math.random() * lore.length)];
+        }
+
+        // End Game
+        endGameButton.addEventListener("click", () => {
+            endGame("Game over. Your final level was: " + playerLevel);
+        });
+
+        // End game function
+        function endGame(message) {
+            document.getElementById("gameOutput").innerText = message;
+            disableAllButtons();
+            postBattleChoices.style.display = "none"; // Hide battle options
+            locationSelection.style.display = "none"; // Hide location selection
+            npcInteraction.style.display = "none"; // Hide NPC interaction
+            document.getElementById('healthBars').style.display = 'none'; // Hide health bars
+        }
+
+        // Disable all buttons
+        function disableAllButtons() {
+            const buttons = document.querySelectorAll("button");
+            buttons.forEach(button => button.disabled = true);
+            endGameButton.disabled = false; // Allow ending the game
+        }
+
+        // Inventory Display
+        inventoryButton.addEventListener("click", () => {
+            const inventoryList = playerInventory.length ? playerInventory.join(", ") : "Your inventory is empty.";
+            document.getElementById("gameOutput").innerText = `Your inventory: ${inventoryList}`;
+        });
+    </script>
+</body>
+</html>
