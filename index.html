@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Cosmere Adventure</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to your external CSS file -->
     <style>
         /* Basic CSS styling to make the game look nicer */
         body {
@@ -91,6 +92,15 @@
         .attackOption:hover {
             background-color: #f0f0f0;
         }
+
+        #cheatsPopup {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid black;
+            padding: 15px;
+            z-index: 2000;
+        }
     </style>
 </head>
 
@@ -105,6 +115,7 @@
 
     <div class="button-container">
         <button id="characterSelectionButton">Character Selection</button>
+        <button id="cheatsButton" style="display:none;">Cheats</button> <!-- Cheats button, initially hidden -->
         <button id="exploreButton" disabled>Explore</button>
         <button id="loadGameButton" disabled>Load Game</button>
         <button id="saveGameButton" disabled>Save Game</button>
@@ -153,6 +164,16 @@
         <button id="ignoreButton">Ignore</button>
     </div>
 
+    <!-- Cheats Popup -->
+    <div id="cheatsPopup">
+        <h2>Cheats Menu</h2>
+        <button id="adonalsiumButton">Play as Adonalsium</button>
+        <br><br>
+        <button id="musicButton">Play Master of Puppets</button>
+        <br><br>
+        <button id="closePopupButton">Close</button>
+    </div>
+
     <script>
         // Game variables
         let player = null;
@@ -164,7 +185,7 @@
         let currentEnemyHealth = null;
         let currentEnemyType = "";
         let playerInventory = [];
-        let currentLoreIndex = 0; // Added to track the current index of Mistborn lore
+        let currentLoreIndex = 0; 
 
         // Attacks for each character
         const attacks = {
@@ -172,6 +193,7 @@
             Kaladin: ["Wind Slash", "Storm Slam", "Shield Bash", "Protective Shield", "Cleansing Storm", "Syl's Embrace", "Radiant Destruction"],
             Szeth: ["Honorblade Strike", "Windrunner's Fury", "Fury of the Honorblade", "Skybreaker's Visage", "Transcendent Blade", "Gift of the Stormfather"],
             Dalinar: ["Bondsmith's Wield", "Armored Charge", "Forging Strength", "Call of the Thrill", "Unyielding Resolve", "Blackthorn's Wrath"],
+            Adonalsium: ["Reality Shatter"] 
         };
 
         // Unique Abilities
@@ -197,6 +219,9 @@
             Dalinar: [
                 { name: "Bondsmith's Resolve", description: "Rally your strength to heal and bolster defenses.", healAmount: 20, unlockedAtLevel: 1 },
                 { name: "Unyielding Charge", description: "Unleash a powerful charge that trampling foes with might.", bonusDamage: 25, unlockedAtLevel: 3 },
+            ],
+            Adonalsium: [ 
+                { name: "Creation", description: "Unleash the power of creation to obliterate foes.", bonusDamage: 100, unlockedAtLevel: 1 } 
             ]
         };
 
@@ -215,7 +240,7 @@
                 playerLevel,
                 playerGold,
                 playerInventory,
-                currentLoreIndex // Save the current lore index
+                currentLoreIndex
             };
             localStorage.setItem('savedGame', JSON.stringify(gameData));
             document.getElementById("gameOutput").innerText = "Game saved successfully!";
@@ -235,8 +260,8 @@
         const updateDisplay = () => {
             document.getElementById("gameOutput").innerText = `Welcome back, ${player}! Your health: ${playerHealth}, Level: ${playerLevel}`;
             exploreButton.disabled = false;
-            locationSelection.style.display = "none"; // Hide location selection until explored
-            postBattleChoices.style.display = "none"; // Hide battle options
+            locationSelection.style.display = "none";
+            postBattleChoices.style.display = "none"; 
             inventoryButton.disabled = false;
             updateHealthBars();
         };
@@ -247,7 +272,7 @@
             document.getElementById('playerHealthSpan').style.width = `${playerHealthPercentage}%`;
         
             if (currentEnemyHealth) {
-                const enemyHealthPercentage = (currentEnemyHealth / 100) * 100; // Assuming max health is 100 for simplicity
+                const enemyHealthPercentage = (currentEnemyHealth / 100) * 100;
                 document.getElementById('enemyHealthSpan').style.width = `${enemyHealthPercentage}%`;
             }
         };
@@ -257,7 +282,6 @@
             const isRosharan = ["Dalinar", "Kaladin", "Szeth"].includes(player);
             const isVin = player === "Vin";
 
-            // Show/Hide relevant buttons
             document.getElementById("luthadelButton").style.display = isRosharan ? "none" : "block";
             document.getElementById("elendelButton").style.display = isRosharan ? "none" : "block";
             document.getElementById("scadrialButton").style.display = isRosharan ? "none" : "block";
@@ -312,6 +336,7 @@
         // Save queries to HTML elements
         const exploreButton = document.getElementById("exploreButton");
         const characterSelectionButton = document.getElementById("characterSelectionButton");
+        const cheatsButton = document.getElementById("cheatsButton");
         const loadGameButton = document.getElementById("loadGameButton");
         const saveGameButton = document.getElementById("saveGameButton");
         const inventoryButton = document.getElementById("inventoryButton");
@@ -339,11 +364,14 @@
 
         // Character Selection
         characterSelectionButton.addEventListener("click", () => {
-            const character = prompt("Choose your character: Vin (Mistborn), Kaladin (Windrunner), Szeth (Assassin in White), Dalinar (Bondsmith):").trim();
-            if (["Vin", "Kaladin", "Szeth", "Dalinar"].includes(character)) {
+            const character = prompt("Choose your character: Vin (Mistborn), Kaladin (Windrunner), Szeth (Assassin in White), Dalinar (Bondsmith).\nType 'cheats' for special character.").trim();
+            if (character.toLowerCase() === "cheats") {
+                cheatsButton.style.display = "block"; // Show Cheats button
+                document.getElementById("gameOutput").innerText = "Cheats option available! Select 'Cheats' to play as Adonalsium.";
+            } else if (["Vin", "Kaladin", "Szeth", "Dalinar"].includes(character)) {
                 player = character;
                 playerDamage = character === "Vin" ? 15 : character === "Kaladin" ? 18 : character === "Szeth" ? 15 : 18;
-                playerDefence = character === "Vin" ? 5 : character === "Kaladin" ? 6 : character === "Szeth" ? 4 : 7;
+                playerDefence = character === "Vin" ? 5 : character === "Kaladin" ? 6 : character === "Szeth" ? 4 : 5;
 
                 // Enable other buttons after character selection
                 exploreButton.disabled = false;
@@ -352,13 +380,61 @@
                 inventoryButton.disabled = false;
 
                 document.getElementById("gameOutput").innerText = `You have chosen ${player}. Ready for adventure!`;
-                locationSelection.style.display = "none"; // Hide location selection until explored
+                cheatsButton.style.display = "none"; // Hide Cheats button
 
                 // Update available locations based on character
                 updateLocationButtons();
             } else {
                 document.getElementById("gameOutput").innerText = "Invalid character selection.";
             }
+        });
+
+        // Cheats Button functionality
+        cheatsButton.addEventListener("click", () => {
+            player = "Adonalsium";
+            playerDamage = 50; 
+            playerDefence = 10; 
+
+            // Enable other buttons after character selection
+            exploreButton.disabled = false;
+            loadGameButton.disabled = false;
+            saveGameButton.disabled = false;
+            inventoryButton.disabled = false;
+
+            document.getElementById("gameOutput").innerText = `You have chosen ${player}. Ready for adventure!`;
+            locationSelection.style.display = "none"; 
+            updateLocationButtons();
+            cheatsButton.style.display = "none"; 
+        });
+
+        // Event listener for opening cheats popup
+        cheatsButton.addEventListener("click", () => {
+            document.getElementById("cheatsPopup").style.display = "block"; // Show the popup
+        });
+
+        // Event listener for closing the popup
+        document.getElementById("closePopupButton").addEventListener("click", () => {
+            document.getElementById("cheatsPopup").style.display = "none"; // Hide the popup
+        });
+
+        // Event listener for selecting Adonalsium as a character
+        document.getElementById("adonalsiumButton").addEventListener("click", () => {
+            player = 'Adonalsium';
+            playerHealth = 200; // Setting a higher health for the cheats character
+            playerDamage = 50; // Setting damage for the cheats character
+            playerLevel = 10; // Setting to max level for cheats character
+            document.getElementById("gameOutput").innerText = `You are now playing as ${player} - the God of the Cosmere!`;
+            updateHealthBars();
+            document.getElementById("cheatsPopup").style.display = "none"; // Hide the popup after selection
+        });
+
+        // Event listener for the music button
+        document.getElementById("musicButton").addEventListener("click", () => {
+            const musicPlayer = document.getElementById("backgroundMusic");
+            musicPlayer.src = "master.mp3"; // Set the background music file
+            musicPlayer.play(); // Start playing the new music
+            document.getElementById("gameOutput").innerText = "Now playing: Master of Puppets!";
+            document.getElementById("cheatsPopup").style.display = "none"; // Hide the popup after selection
         });
 
         // Save Game
@@ -396,8 +472,8 @@
             document.getElementById('healthBars').style.display = 'flex';
             updateHealthBars();
 
-            // 50% chance to encounter an NPC
-            if (Math.random() < 0.5) {
+            // 50% chance to encounter an NPC if the player is not Adonalsium
+            if (Math.random() < 0.5 && player !== "Adonalsium") {
                 npcInteraction.style.display = "block";
                 const npcNamesVin = ["Breeze", "Ham", "Dockson", "Clubs"];
                 const npcNamesRoshar = ["Navani", "Lift", "Renarin", "The Sibling"];
@@ -405,13 +481,13 @@
                 const npcName = npcList[Math.floor(Math.random() * npcList.length)];
                 document.getElementById("gameOutput").innerText += `\nYou encounter ${npcName}!`;
             } else {
-                postBattleChoices.style.display = "block"; // Show battle options
+                postBattleChoices.style.display = "block"; 
             }
         }
 
         // Show Attack Menu
         const showAttackMenu = (isSpecial) => {
-            attackOptionsContainer.innerHTML = ""; // Clear previous options
+            attackOptionsContainer.innerHTML = ""; 
 
             const attackList = isSpecial ? specialAbilities[player].filter(ability => isSpecialAbilityUnlocked(ability)) : attacks[player];
             attackList.forEach((attack) => {
@@ -420,12 +496,12 @@
                 attackDiv.innerText = typeof attack === 'string' ? attack : attack.name;
                 attackDiv.onclick = () => {
                     isSpecial ? useSpecialAbility(attack) : useAttack(attack);
-                    attackMenu.style.display = "none"; // Hide attack menu after use
+                    attackMenu.style.display = "none"; 
                 };
                 attackOptionsContainer.appendChild(attackDiv);
             });
 
-            attackMenu.style.display = "block"; // Show menu
+            attackMenu.style.display = "block"; 
         };
 
         // Attack Button
@@ -436,17 +512,16 @@
 
         // Close Attack Menu Button
         closeAttackMenuButton.addEventListener("click", () => {
-            attackMenu.style.display = "none"; // Close the attack menu
+            attackMenu.style.display = "none"; 
         });
 
         // Use Attack or Special Ability
         const useAttack = (attackName) => {
             if (currentEnemyHealth > 0) {
-                // Calculate random damage between 15 and 20
                 let damage = Math.floor(Math.random() * (20 - 15 + 1) + 15);
                 currentEnemyHealth -= damage;
                 document.getElementById("gameOutput").innerText += `\nYou used ${attackName} against ${currentEnemyType} for ${damage} damage.`;
-                updateHealthBars(); // Update health bars after attack
+                updateHealthBars(); 
                 checkEnemyDefeated();
             }
         };
@@ -460,13 +535,12 @@
                 } 
                 if (ability.healAmount) {
                     playerHealth += ability.healAmount;
-                    // Ensure player health does not exceed maximum
                     if (playerHealth > 100) {
                         playerHealth = 100;
                     }
                     document.getElementById("gameOutput").innerText += `\nYou used ${ability.name} and healed for ${ability.healAmount} health. Your health is now ${playerHealth}.`;
                 }
-                updateHealthBars(); // Update health bars after ability use
+                updateHealthBars(); 
                 checkEnemyDefeated();
             }
         };
@@ -475,19 +549,19 @@
         const checkEnemyDefeated = () => {
             if (currentEnemyHealth <= 0) {
                 document.getElementById("gameOutput").innerText += `\nYou defeated ${currentEnemyType}!`;
-                playerLevel++; // Level up for defeating an enemy
-                postBattleChoices.style.display = "none"; // Hide battle options
+                playerLevel++; 
+                postBattleChoices.style.display = "none"; 
             } else {
-                enemyTurn(); // Enemy attacks back if still alive
+                enemyTurn(); 
             }
         };
 
         // Enemy Turn
         const enemyTurn = () => {
-            const enemyDamage = Math.floor(Math.random() * (15 - 10 + 1)) + 10; // Random damage between 10 and 15
+            const enemyDamage = Math.floor(Math.random() * (15 - 10 + 1)) + 10; 
             playerHealth -= enemyDamage;
             document.getElementById("gameOutput").innerText += `\n${currentEnemyType} counterattacked you for ${enemyDamage} damage. Your health is now ${playerHealth}.`;
-            updateHealthBars(); // Update health after enemy attack
+            updateHealthBars(); 
             if (playerHealth <= 0) {
                 endGame("You have been defeated by " + currentEnemyType + "... Game over.");
             }
@@ -495,16 +569,20 @@
 
         // NPC Interaction
         talkButton.addEventListener("click", () => {
-            const npcLore = player === "Vin" ? getMistbornLore() : getStormlightLore();
-            document.getElementById("gameOutput").innerText += `\nNPC: "${npcLore}"`;
+            if (player !== "Adonalsium") {
+                const npcLore = player === "Vin" ? getMistbornLore() : getStormlightLore();
+                document.getElementById("gameOutput").innerText += `\nNPC: "${npcLore}"`;
+            } else {
+                document.getElementById("gameOutput").innerText += "\nAdonalsium cannot interact with NPCs.";
+            }
             npcInteraction.style.display = "none";
-            postBattleChoices.style.display = "block"; // Show battle options after talking to NPC
+            postBattleChoices.style.display = "block"; 
         });
 
         ignoreButton.addEventListener("click", () => {
             document.getElementById("gameOutput").innerText += "\nYou chose to ignore the NPC.";
             npcInteraction.style.display = "none";
-            postBattleChoices.style.display = "block"; // Show battle options directly after ignoring the NPC
+            postBattleChoices.style.display = "block"; 
         });
 
         // Updated getMistbornLore to display in order
@@ -518,9 +596,9 @@
                 "Haunted by her own demons and struggling to maintain hope in the face of overwhelming despair, Vin joins forces with her friends to uncover the truth behind the Hero of Ages, a figure destined to save the world. Together, they must unravel the tangled threads of history, confront their own mortality, and make a final stand against the impending doom. As the world hurtles towards its apocalyptic fate, Vin and her companions must find a way to defy the prophecies and forge a new path for the future of Scadrial, no matter the cost."
             ];
             if (currentLoreIndex < lore.length) {
-                return lore[currentLoreIndex++]; // Return current lore line and increment index
+                return lore[currentLoreIndex++]; 
             } else {
-                return "You've heard all the story from the NPC."; // Inform if all lore has been shared
+                return "You've heard all the story from the NPC."; 
             }
         }
 
@@ -530,7 +608,7 @@
                 "In the tumultuous land of Roshar, where fierce storms shape the terrain and the very essence of life, destinies intertwine in unexpected ways. Dalinar Kholin, the valiant high prince burdened by his past, grapples with unsettling visions that warn of impending doom. Amidst rising tensions among warring factions, Dalinar seeks to unify his people against a common threat, driven by a sense of honor and the desire to protect his family and realm. His struggle is compounded by questions of leadership and trust, as old rivalries threaten to unravel the fragile alliances he hopes to build.",
                 "Across the span of the continent, Kaladin Stormblessed rises from the depths of despair. Once a soldier and now a slave, he becomes a beacon of hope for those around him. Bonding with Sylphrena, a spren of light and honor, Kaladin discovers his innate abilities as a Windrunner, harnessing the power of the storms to shield and uplift his newfound comrades. Meanwhile, Shallan Davar embarks on her own journey, seeking knowledge and grappling with her painful past as she unearths secrets hidden within the ancient texts of her ancestors. As the threat of the Voidbringers looms on the horizon, their paths converge, fated to play pivotal roles in the unfolding saga of a world teetering on the brink of destruction.",
                 "In Words of Radiance, the storm-lashed world of Roshar pulses with tension as its heroes grapple with the weight of their destinies. Dalinar Kholin, now a nascent leader of the coalition to combat the looming threat of the Voidbringers, finds himself haunted by the visions of the Almighty. The specters of the past and the harsh realities of war force him to confront not only his own doubts but also the disunity among the Highprinces. As he strives to bring together a fractured society, the stakes grow desperate, not just for himself but for the future of his kingdom, the very soul of which hangs in the balance.",
-                "Meanwhile, Kaladin Stormblessed embraces his role as a protector, having accepted the mantle of a Knight Radiant. As he trains a new generation of warriors beneath the tumultuous skies, he navigates the complexities of leadership and loyalty while wrestling with his own self-doubt. With Sylphrena at his side, Kaladin strives to uplift those around him, but personal and external battles loom large, threatening to engulf him. Across the realms, Shallan Davar pursues her quest for truth, struggling with her own identity and the secrets that could alter the fate of Roshar. As battles rage and ancient truths are unveiled, the paths of these characters converge, setting the stage for a clash that could reshape their world forever.",
+                "Meanwhile, Kaladin Stormblessed embraces his role as a protector, having accepted the mantle of a Knight Radiant. As he trains a new generation of warriors beneath the tumultuous skies, he navigates the complexities of leadership and loyalty while wrestling with his own self-doubt. With Sylphrena at his side, Kaladin strives to uplift those around him, but personal and external battles loom large, threatening to engulf him. Across the realms, Shallan Davar pursues her quest for truth, struggling with her fractured identity and the secrets that could alter the fate of Roshar. As battles rage and ancient truths are unveiled, the paths of these characters converge, setting the stage for a clash that could reshape their world forever.",
                 "In Oathbringer, the tumultuous saga of Roshar escalates as the heroes must confront the deep scars of their pasts while preparing for an impending cataclysm. Dalinar Kholin, now a fully realized leader, faces the daunting task of uniting an increasingly fractured coalition against the looming threat of the Voidbringers. Haunted by the burden of his memories, Dalinar seeks to reconcile his violent history while striving to instill a sense of honor and unity among the disparate factions. His journey brings him face to face with the truths of his own mistakes and the implications of power, forcing him to redefine his legacy as he grapples with the nature of leadership and redemption.",
                 "Meanwhile, Kaladin Stormblessed continues to navigate the complexities of his role as a protector and a Knight Radiant, grappling with the weight of his own expectations and responsibilities. As tensions rise both within and outside his circle, Kaladin must confront his fears and insecurities while striving to shield those he loves from the encroaching darkness. At the same time, Shallan Davar delves deeper into her own fractured psyche, struggling to embrace her identity as a Radiant and uncovering the hidden truths of her past. As the battles grow fiercer and tumultuous storms sweep across the land, the entwined fates of these characters drive the narrative toward an epic confrontation, challenging not only their bonds but also the very foundations of their world.",
                 "In Rhythm of War, the struggle against the Voidbringers intensifies as the various factions of Roshar confront both external threats and internal divisions. Dalinar Kholin, determined to unite a fractured alliance, grapples with the complexities of leadership while facing the haunting remnants of his past. As he seeks to instill a sense of honor among the nations, Dalinar's journey becomes one of redemption and understanding, raising questions about the true cost of power and the sacrifices required for lasting unity.",
@@ -550,17 +628,17 @@
         function endGame(message) {
             document.getElementById("gameOutput").innerText = message;
             disableAllButtons();
-            postBattleChoices.style.display = "none"; // Hide battle options
-            locationSelection.style.display = "none"; // Hide location selection
-            npcInteraction.style.display = "none"; // Hide NPC interaction
-            document.getElementById('healthBars').style.display = 'none'; // Hide health bars
+            postBattleChoices.style.display = "none"; 
+            locationSelection.style.display = "none"; 
+            npcInteraction.style.display = "none"; 
+            document.getElementById('healthBars').style.display = 'none'; 
         }
 
         // Disable all buttons
         function disableAllButtons() {
             const buttons = document.querySelectorAll("button");
             buttons.forEach(button => button.disabled = true);
-            endGameButton.disabled = false; // Allow ending the game
+            endGameButton.disabled = false; 
         }
 
         // Inventory Display
