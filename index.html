@@ -1,19 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cosmere Adventure</title>
     <link rel="stylesheet" href="style.css"> <!-- Link to your external CSS file -->
     <style>
-        /* Basic CSS styling to make the game look nicer */
+        /* Global styles */
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --success-color: #1abc9c;
+            --text-color: #333;
+            --bg-color: blue; /* Set background color to blue */
+            --header-footer-bg: #35424a;
+            --link-hover-bg: #49a6e0;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #000080;
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.5s ease;
+        }
+
+        /* Header styles */
+        header {
+            background: var(--header-footer-bg);
+            color: #ffffff;
+            padding: 20px 0;
+            text-align: center;
+            animation: fadeIn 1s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
         h1 {
-            color: #ffffff;
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
+        /* Main content styles */
+        main {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        /* Game Output */
         #gameOutput {
             font-size: 20px;
             font-weight: bold;
@@ -25,34 +68,25 @@
             padding: 15px;
         }
 
-        .button-container {
-            display: flex;
-            justify-content: center;
-            margin: 10px 0;
-        }
-
+        /* Button styles */
         button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
+            background: var(--primary-color);
+            color: #ffffff;
             border: none;
+            padding: 10px 15px;
             border-radius: 5px;
             cursor: pointer;
-            margin: 0 5px;
+            transition: all 0.3s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            margin: 5px;
         }
 
         button:hover {
-            background-color: #45a049;
+            background: var(--secondary-color);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
 
-        #endGameButton {
-            background-color: #f44336;
-        }
-
-        #endGameButton:hover {
-            background-color: #e91e63;
-        }
-
+        /* Health Bars */
         #healthBars {
             display: flex;
             justify-content: space-between;
@@ -74,7 +108,18 @@
             border-radius: 5px;
         }
 
-        #attackMenu {
+        #endGameButton {
+            background-color: var(--danger-color);
+        }
+
+        #endGameButton:hover {
+            background-color: #e91e63;
+        }
+
+        /* NPC and Attack Menu */
+        #attackMenu,
+        #cheatsPopup,
+        #musicPopup {
             display: none;
             background-color: white;
             border: 1px solid #ccc;
@@ -93,86 +138,121 @@
             background-color: #f0f0f0;
         }
 
-        #cheatsPopup {
-            display: none;
-            position: absolute;
-            background-color: white;
-            border: 1px solid black;
-            padding: 15px;
-            z-index: 2000;
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            p {
+                font-size: 0.9em;
+            }
+
+            button {
+                width: 100%;
+                padding: 12px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
     </style>
 </head>
 
 <body>
-    <h1>Cosmere Adventure v3</h1>
-    <p id="gameOutput">Welcome to your adventure! Select a character to begin.</p>
+    <header>
+        <h1>Cosmere Adventure v3</h1>
+    </header>
 
-    <audio id="backgroundMusic" autoplay loop>
-        <source src="song.mp3" type="audio/mp3">
-        Your browser does not support the audio element.
-    </audio>
+    <main>
+        <p id="gameOutput">Welcome to your adventure! Select a character to begin.</p>
 
-    <div class="button-container">
-        <button id="characterSelectionButton">Character Selection</button>
-        <button id="cheatsButton" style="display:none;">Cheats</button> <!-- Cheats button, initially hidden -->
-        <button id="exploreButton" disabled>Explore</button>
-        <button id="loadGameButton" disabled>Load Game</button>
-        <button id="saveGameButton" disabled>Save Game</button>
-        <button id="inventoryButton" disabled>Inventory</button>
-        <button id="endGameButton">End Game</button>
-    </div>
+        <audio id="backgroundMusic" autoplay loop>
+            <source src="song.mp3" type="audio/mp3">
+            Your browser does not support the audio element.
+        </audio>
 
-    <div id="healthBars" style="display: none;">
-        <div id="playerHealthBar" class="health">
-            <span id="playerHealthSpan" style="background-color: green; width: 100%;"></span>
+        <div class="button-container">
+            <button id="characterSelectionButton">Character Selection</button>
+            <button id="cheatsButton" style="display:none;">Cheats</button>
+            <button id="exploreButton" disabled>Explore</button>
+            <button id="loadGameButton" disabled>Load Game</button>
+            <button id="saveGameButton" disabled>Save Game</button>
+            <button id="inventoryButton" disabled>Inventory</button>
+            <button id="endGameButton">End Game</button>
         </div>
-        <div id="enemyHealthBar" class="health">
-            <span id="enemyHealthSpan" style="background-color: red; width: 100%;"></span>
+
+        <div id="healthBars" style="display: none;">
+            <div id="playerHealthBar" class="health">
+                <span id="playerHealthSpan" style="background-color: green; width: 100%;"></span>
+            </div>
+            <div id="enemyHealthBar" class="health">
+                <span id="enemyHealthSpan" style="background-color: red; width: 100%;"></span>
+            </div>
         </div>
-    </div>
 
-    <div id="attackMenu" style="display: none;">
-        <p>Select an attack:</p>
-        <div id="attackOptionsContainer"></div>
-        <button id="closeAttackMenuButton">Close</button>
-    </div>
+        <div id="attackMenu">
+            <p>Select an attack:</p>
+            <div id="attackOptionsContainer"></div>
+            <button id="closeAttackMenuButton">Close</button>
+        </div>
 
-    <div id="locationSelection" style="display: none;">
-        <p>Choose a location to explore:</p>
-        <button id="luthadelButton" style="display: none;">Luthadel</button>
-        <button id="stormlandsButton">Stormlands</button>
-        <button id="rithmatistButton">Keep Venture</button>
-        <button id="elendelButton" style="display: none;">Fellise</button>
-        <button id="alethkarButton">Alethkar</button>
-        <button id="urithiruButton">Urithiru</button>
-        <button id="kholinarButton">Kholinar</button>
-        <button id="thaylenCityButton">Thaylen City</button>
-        <button id="scadrialButton" style="display: none;">Kredik Shaw</button>
-    </div>
+        <div id="locationSelection" style="display: none;">
+            <p>Choose a location to explore:</p>
+            <button id="luthadelButton" style="display: none;">Luthadel</button>
+            <button id="stormlandsButton">Stormlands</button>
+            <button id="rithmatistButton">Keep Venture</button>
+            <button id="elendelButton" style="display: none;">Fellise</button>
+            <button id="alethkarButton">Alethkar</button>
+            <button id="urithiruButton">Urithiru</button>
+            <button id="kholinarButton">Kholinar</button>
+            <button id="thaylenCityButton">Thaylen City</button>
+            <button id="scadrialButton" style="display: none;">Kredik Shaw</button>
+        </div>
 
-    <div id="postBattleChoices" style="display: none;">
-        <p>What do you do?</p>
-        <button id="attackButton">Attack</button>
-        <button id="defendButton">Defend</button>
-        <button id="specialButton">Use Special Ability</button>
-    </div>
+        <div id="postBattleChoices" style="display: none;">
+            <p>What do you do?</p>
+            <button id="attackButton">Attack</button>
+            <button id="defendButton">Defend</button>
+            <button id="specialButton">Use Special Ability</button>
+        </div>
 
-    <div id="npcInteraction" style="display: none;">
-        <p>You encounter an NPC! What do you want to do?</p>
-        <button id="talkButton">Talk</button>
-        <button id="ignoreButton">Ignore</button>
-    </div>
+        <div id="npcInteraction" style="display: none;">
+            <p>You encounter an NPC! What do you want to do?</p>
+            <button id="talkButton">Talk</button>
+            <button id="ignoreButton">Ignore</button>
+        </div>
 
-    <!-- Cheats Popup -->
-    <div id="cheatsPopup">
-        <h2>Cheats Menu</h2>
-        <button id="adonalsiumButton">Play as Adonalsium</button>
-        <br><br>
-        <button id="musicButton">Play Master of Puppets</button>
-        <br><br>
-        <button id="closePopupButton">Close</button>
-    </div>
+        <!-- Cheats Popup -->
+        <div id="cheatsPopup">
+            <h2>Cheats Menu</h2>
+            <button id="adonalsiumButton">Play as Adonalsium</button>
+            <br><br>
+            <button id="musicButton">Music</button> <!-- Changed from "Play Master of Puppets" to "Music" -->
+            <br><br>
+            <button id="closePopupButton">Close</button>
+        </div>
+
+        <!-- Music Popup -->
+        <div id="musicPopup">
+            <h2>Select Music</h2>
+            <button id="track1Button">Track 1</button>
+            <button id="track2Button">Track 2</button>
+            <button id="track3Button">Track 3</button>
+            <br><br>
+            <button id="closeMusicPopupButton">Close</button>
+        </div>
+    </main>
 
     <script>
         // Game variables
@@ -185,7 +265,7 @@
         let currentEnemyHealth = null;
         let currentEnemyType = "";
         let playerInventory = [];
-        let currentLoreIndex = 0; 
+        let currentLoreIndex = 0;
 
         // Attacks for each character
         const attacks = {
@@ -193,17 +273,17 @@
             Kaladin: ["Wind Slash", "Storm Slam", "Shield Bash", "Protective Shield", "Cleansing Storm", "Syl's Embrace", "Radiant Destruction"],
             Szeth: ["Honorblade Strike", "Windrunner's Fury", "Fury of the Honorblade", "Skybreaker's Visage", "Transcendent Blade", "Gift of the Stormfather"],
             Dalinar: ["Bondsmith's Wield", "Armored Charge", "Forging Strength", "Call of the Thrill", "Unyielding Resolve", "Blackthorn's Wrath"],
-            Adonalsium: ["Reality Shatter"] 
+            Adonalsium: ["Reality Shatter"]
         };
 
         // Unique Abilities
         const specialAbilities = {
             Vin: [
-              { name: "Pewter Flame", description: "Flare Pewter and run into a nearby building, waiting for a chance to strike.", healAmount: 30, bonusDamage: 10, unlockedAtLevel: 1 },
-              { name: "Allomantic Burst", description: "Unleash a powerful Allomantic energy burst.", bonusDamage: 20, unlockedAtLevel: 3 },
-              { name: "Atium Rush", description: "Burn the powerful metal, Atium, making yourself invincible for a time.", bonusDamage: 30, unlockedAtLevel: 5 },
-              { name: "Supersonic Launch", description: "Burn Steel and Duralumin, then immediately flare Pewter, launching yourself at your opponent and incredible speeds.", bonusDamage: 50, unlockedAtLevel: 8 },
-              { name: "God Metal Stab", description: "Stab your opponent with a dagger made of Raysium, the God Metal of Odium, dealing massive damage.", bonusDamage: 75, unlockedAtLevel: 10 }
+                { name: "Pewter Flame", description: "Flare Pewter and run into a nearby building, waiting for a chance to strike.", healAmount: 30, bonusDamage: 10, unlockedAtLevel: 1 },
+                { name: "Allomantic Burst", description: "Unleash a powerful Allomantic energy burst.", bonusDamage: 20, unlockedAtLevel: 3 },
+                { name: "Atium Rush", description: "Burn the powerful metal, Atium, making yourself invincible for a time.", bonusDamage: 30, unlockedAtLevel: 5 },
+                { name: "Supersonic Launch", description: "Burn Steel and Duralumin, then immediately flare Pewter, launching yourself at your opponent at incredible speeds.", bonusDamage: 50, unlockedAtLevel: 8 },
+                { name: "God Metal Stab", description: "Stab your opponent with a dagger made of Raysium, the God Metal of Odium, dealing massive damage.", bonusDamage: 75, unlockedAtLevel: 10 }
             ],
             Kaladin: [
                 { name: "Wave of Stormlight", description: "Generate a wave of Stormlight that damages and pushes back enemies.", healAmount: 30, bonusDamage: 10, unlockedAtLevel: 1 },
@@ -220,8 +300,8 @@
                 { name: "Bondsmith's Resolve", description: "Rally your strength to heal and bolster defenses.", healAmount: 20, unlockedAtLevel: 1 },
                 { name: "Unyielding Charge", description: "Unleash a powerful charge that trampling foes with might.", bonusDamage: 25, unlockedAtLevel: 3 },
             ],
-            Adonalsium: [ 
-                { name: "Creation", description: "Unleash the power of creation to obliterate foes.", bonusDamage: 100, unlockedAtLevel: 1 } 
+            Adonalsium: [
+                { name: "Creation", description: "Unleash the power of creation to obliterate foes.", bonusDamage: 100, unlockedAtLevel: 1 }
             ]
         };
 
@@ -261,7 +341,7 @@
             document.getElementById("gameOutput").innerText = `Welcome back, ${player}! Your health: ${playerHealth}, Level: ${playerLevel}`;
             exploreButton.disabled = false;
             locationSelection.style.display = "none";
-            postBattleChoices.style.display = "none"; 
+            postBattleChoices.style.display = "none";
             inventoryButton.disabled = false;
             updateHealthBars();
         };
@@ -270,7 +350,7 @@
         const updateHealthBars = () => {
             const playerHealthPercentage = (playerHealth / 100) * 100;
             document.getElementById('playerHealthSpan').style.width = `${playerHealthPercentage}%`;
-        
+
             if (currentEnemyHealth) {
                 const enemyHealthPercentage = (currentEnemyHealth / 100) * 100;
                 document.getElementById('enemyHealthSpan').style.width = `${enemyHealthPercentage}%`;
@@ -285,7 +365,7 @@
             document.getElementById("luthadelButton").style.display = isRosharan ? "none" : "block";
             document.getElementById("elendelButton").style.display = isRosharan ? "none" : "block";
             document.getElementById("scadrialButton").style.display = isRosharan ? "none" : "block";
-            document.getElementById("rithmatistButton").style.display = isRosharan ? "none" : "block";         
+            document.getElementById("rithmatistButton").style.display = isRosharan ? "none" : "block";
             document.getElementById("urithiruButton").style.display = isVin ? "none" : "block";
             document.getElementById("kholinarButton").style.display = isVin ? "none" : "block";
             document.getElementById("stormlandsButton").style.display = isVin ? "none" : "block";
@@ -350,21 +430,17 @@
         const kholinarButton = document.getElementById("kholinarButton");
         const thaylenCityButton = document.getElementById("thaylenCityButton");
         const scadrialButton = document.getElementById("scadrialButton");
-        const attackButton = document.getElementById("attackButton");
-        const defendButton = document.getElementById("defendButton");
-        const specialButton = document.getElementById("specialButton");
         const postBattleChoices = document.getElementById("postBattleChoices");
-        const locationSelection = document.getElementById("locationSelection");
+        const npcInteraction = document.getElementById("npcInteraction");
         const attackMenu = document.getElementById("attackMenu");
         const attackOptionsContainer = document.getElementById("attackOptionsContainer");
         const closeAttackMenuButton = document.getElementById("closeAttackMenuButton");
         const talkButton = document.getElementById("talkButton");
         const ignoreButton = document.getElementById("ignoreButton");
-        const npcInteraction = document.getElementById("npcInteraction");
 
         // Character Selection
         characterSelectionButton.addEventListener("click", () => {
-            const character = prompt("Choose your character: Vin (Mistborn), Kaladin (Windrunner), Szeth (Assassin in White), Dalinar (Bondsmith).\nType 'cheats' for special character.").trim();
+            const character = prompt("Choose your character: Vin (Mistborn), Kaladin (Windrunner), Szeth (Assassin in White), Dalinar (Bondsmith).").trim();
             if (character.toLowerCase() === "cheats") {
                 cheatsButton.style.display = "block"; // Show Cheats button
                 document.getElementById("gameOutput").innerText = "Cheats option available! Select 'Cheats' to play as Adonalsium.";
@@ -392,19 +468,13 @@
         // Cheats Button functionality
         cheatsButton.addEventListener("click", () => {
             player = "Adonalsium";
-            playerDamage = 50; 
-            playerDefence = 10; 
-
-            // Enable other buttons after character selection
-            exploreButton.disabled = false;
-            loadGameButton.disabled = false;
-            saveGameButton.disabled = false;
-            inventoryButton.disabled = false;
-
+            playerHealth = 200; // Setting a higher health for the cheats character
+            playerDamage = 50; // Setting damage for the cheats character
+            playerLevel = 10; // Setting to max level for cheats character
             document.getElementById("gameOutput").innerText = `You have chosen ${player}. Ready for adventure!`;
-            locationSelection.style.display = "none"; 
+            locationSelection.style.display = "none";
             updateLocationButtons();
-            cheatsButton.style.display = "none"; 
+            cheatsButton.style.display = "none";
         });
 
         // Event listener for opening cheats popup
@@ -412,30 +482,34 @@
             document.getElementById("cheatsPopup").style.display = "block"; // Show the popup
         });
 
-        // Event listener for closing the popup
+        // Event listener for closing the cheats popup
         document.getElementById("closePopupButton").addEventListener("click", () => {
-            document.getElementById("cheatsPopup").style.display = "none"; // Hide the popup
+            document.getElementById("cheatsPopup").style.display = "none"; // Hide the cheats popup
         });
 
-        // Event listener for selecting Adonalsium as a character
-        document.getElementById("adonalsiumButton").addEventListener("click", () => {
-            player = 'Adonalsium';
-            playerHealth = 200; // Setting a higher health for the cheats character
-            playerDamage = 50; // Setting damage for the cheats character
-            playerLevel = 10; // Setting to max level for cheats character
-            document.getElementById("gameOutput").innerText = `You are now playing as ${player} - the God of the Cosmere!`;
-            updateHealthBars();
-            document.getElementById("cheatsPopup").style.display = "none"; // Hide the popup after selection
-        });
-
-        // Event listener for the music button
+        // Event listener for opening music popup
         document.getElementById("musicButton").addEventListener("click", () => {
-            const musicPlayer = document.getElementById("backgroundMusic");
-            musicPlayer.src = "master.mp3"; // Set the background music file
-            musicPlayer.play(); // Start playing the new music
-            document.getElementById("gameOutput").innerText = "Now playing: Master of Puppets!";
-            document.getElementById("cheatsPopup").style.display = "none"; // Hide the popup after selection
+            document.getElementById("musicPopup").style.display = "block"; // Show the music selection popup
         });
+
+        // Event listener for closing the music popup
+        document.getElementById("closeMusicPopupButton").addEventListener("click", () => {
+            document.getElementById("musicPopup").style.display = "none"; // Hide the music selection popup
+        });
+
+        // Function for playing selected track
+        const playMusic = (track) => {
+            const musicPlayer = document.getElementById("backgroundMusic");
+            musicPlayer.src = `${track}.mp3`; // Assumes track names correspond to mp3 files
+            musicPlayer.play();
+            document.getElementById("gameOutput").innerText = `Now playing: ${track}!`;
+            document.getElementById("musicPopup").style.display = "none"; // Hide the music selection popup after selection
+        };
+
+        // Event listeners for music track buttons
+        document.getElementById("track1Button").addEventListener("click", () => playMusic("track1"));
+        document.getElementById("track2Button").addEventListener("click", () => playMusic("track2"));
+        document.getElementById("track3Button").addEventListener("click", () => playMusic("track3"));
 
         // Save Game
         saveGameButton.addEventListener("click", saveGame);
@@ -481,13 +555,13 @@
                 const npcName = npcList[Math.floor(Math.random() * npcList.length)];
                 document.getElementById("gameOutput").innerText += `\nYou encounter ${npcName}!`;
             } else {
-                postBattleChoices.style.display = "block"; 
+                postBattleChoices.style.display = "block";
             }
         }
 
         // Show Attack Menu
         const showAttackMenu = (isSpecial) => {
-            attackOptionsContainer.innerHTML = ""; 
+            attackOptionsContainer.innerHTML = "";
 
             const attackList = isSpecial ? specialAbilities[player].filter(ability => isSpecialAbilityUnlocked(ability)) : attacks[player];
             attackList.forEach((attack) => {
@@ -496,12 +570,12 @@
                 attackDiv.innerText = typeof attack === 'string' ? attack : attack.name;
                 attackDiv.onclick = () => {
                     isSpecial ? useSpecialAbility(attack) : useAttack(attack);
-                    attackMenu.style.display = "none"; 
+                    attackMenu.style.display = "none";
                 };
                 attackOptionsContainer.appendChild(attackDiv);
             });
 
-            attackMenu.style.display = "block"; 
+            attackMenu.style.display = "block";
         };
 
         // Attack Button
@@ -512,16 +586,17 @@
 
         // Close Attack Menu Button
         closeAttackMenuButton.addEventListener("click", () => {
-            attackMenu.style.display = "none"; 
+            attackMenu.style.display = "none";
         });
 
         // Use Attack or Special Ability
         const useAttack = (attackName) => {
             if (currentEnemyHealth > 0) {
+                // Basic attack logic, damage can be randomized or based on character abilities
                 let damage = Math.floor(Math.random() * (20 - 15 + 1) + 15);
                 currentEnemyHealth -= damage;
                 document.getElementById("gameOutput").innerText += `\nYou used ${attackName} against ${currentEnemyType} for ${damage} damage.`;
-                updateHealthBars(); 
+                updateHealthBars();
                 checkEnemyDefeated();
             }
         };
@@ -532,7 +607,7 @@
                 if (damage) {
                     currentEnemyHealth -= damage;
                     document.getElementById("gameOutput").innerText += `\nYou used ${ability.name} and dealt ${damage} extra damage to ${currentEnemyType}.`;
-                } 
+                }
                 if (ability.healAmount) {
                     playerHealth += ability.healAmount;
                     if (playerHealth > 100) {
@@ -540,7 +615,7 @@
                     }
                     document.getElementById("gameOutput").innerText += `\nYou used ${ability.name} and healed for ${ability.healAmount} health. Your health is now ${playerHealth}.`;
                 }
-                updateHealthBars(); 
+                updateHealthBars();
                 checkEnemyDefeated();
             }
         };
@@ -549,19 +624,19 @@
         const checkEnemyDefeated = () => {
             if (currentEnemyHealth <= 0) {
                 document.getElementById("gameOutput").innerText += `\nYou defeated ${currentEnemyType}!`;
-                playerLevel++; 
-                postBattleChoices.style.display = "none"; 
+                playerLevel++;
+                postBattleChoices.style.display = "none";
             } else {
-                enemyTurn(); 
+                enemyTurn();
             }
         };
 
         // Enemy Turn
         const enemyTurn = () => {
-            const enemyDamage = Math.floor(Math.random() * (15 - 10 + 1)) + 10; 
+            const enemyDamage = Math.floor(Math.random() * (15 - 10 + 1)) + 10;
             playerHealth -= enemyDamage;
             document.getElementById("gameOutput").innerText += `\n${currentEnemyType} counterattacked you for ${enemyDamage} damage. Your health is now ${playerHealth}.`;
-            updateHealthBars(); 
+            updateHealthBars();
             if (playerHealth <= 0) {
                 endGame("You have been defeated by " + currentEnemyType + "... Game over.");
             }
@@ -576,13 +651,13 @@
                 document.getElementById("gameOutput").innerText += "\nAdonalsium cannot interact with NPCs.";
             }
             npcInteraction.style.display = "none";
-            postBattleChoices.style.display = "block"; 
+            postBattleChoices.style.display = "block";
         });
 
         ignoreButton.addEventListener("click", () => {
             document.getElementById("gameOutput").innerText += "\nYou chose to ignore the NPC.";
             npcInteraction.style.display = "none";
-            postBattleChoices.style.display = "block"; 
+            postBattleChoices.style.display = "block";
         });
 
         // Updated getMistbornLore to display in order
@@ -592,13 +667,13 @@
                 "Amid this struggle, a young skaa named Vin discovers her Allomantic abilities and becomes embroiled in a revolutionary plot led by Kelsier, known as the Survivor of Hathsin. As she learns to harness her powers, Vin transforms from a street urchin into a key figure in the rebellion against the Lord Ruler. With their confrontation imminent, the fate of Scadrial hangs in the balance, poised between dark tyranny and the hope of a new dawn.",
                 "Following the events of the first book, Vin and her companions face the daunting challenge of establishing a new society in the wake of the Lord Ruler's defeat. As tensions rise among the various factions vying for power, Vin grapples with her role as a leader and her growing abilities as a Mistborn. The threat of an ancient evil looms, putting both her friends and the future of Scadrial at risk.",
                 "Amid political intrigue, Vin discovers the existence of the Well of Ascension and the immense power it holds. As she navigates betrayal and conflict, she must decide whether to claim this power for herself or find a way to protect her people without losing her humanity. With the fate of the world hanging in the balance, Vin must confront her deepest fears and make a choice that could save or doom Scadrial.",
-                "The world teeters on the brink of destruction as Vin, Sazed, and a small group of companions navigate a complex web of prophecies, ancient civilizations, and the remnants of the Lord Ruler's power. With the catastrophic events known as the Cataclyms looming, Vin must come to terms with her destiny as the focal point of a world-ending prophecy.",
+                "The world teeters on the brink of destruction as Vin, Sazed, and a small group of companions navigate a complex web of prophecies, ancient civilizations, and the remnants of the Lord Ruler's power. With the catastrophic events known as the Cataclysm looming, Vin must come to terms with her destiny as the focal point of a world-ending prophecy.",
                 "Haunted by her own demons and struggling to maintain hope in the face of overwhelming despair, Vin joins forces with her friends to uncover the truth behind the Hero of Ages, a figure destined to save the world. Together, they must unravel the tangled threads of history, confront their own mortality, and make a final stand against the impending doom. As the world hurtles towards its apocalyptic fate, Vin and her companions must find a way to defy the prophecies and forge a new path for the future of Scadrial, no matter the cost."
             ];
             if (currentLoreIndex < lore.length) {
-                return lore[currentLoreIndex++]; 
+                return lore[currentLoreIndex++];
             } else {
-                return "You've heard all the story from the NPC."; 
+                return "You've heard all the story from the NPC.";
             }
         }
 
@@ -616,7 +691,11 @@
                 "The Unmade are ancient and powerful beings that threaten the world and have connections to the Voidbringers.",
                 "The Way of Kings introduces the concept of the bonds between humans and spren, illustrating how they influence each other."
             ];
-            return lore[Math.floor(Math.random() * lore.length)];
+            if (currentLoreIndex < lore.length) {
+                return lore[currentLoreIndex++];
+            } else {
+                return "You've heard all the story from the NPC.";
+            }
         }
 
         // End Game
@@ -628,17 +707,17 @@
         function endGame(message) {
             document.getElementById("gameOutput").innerText = message;
             disableAllButtons();
-            postBattleChoices.style.display = "none"; 
-            locationSelection.style.display = "none"; 
-            npcInteraction.style.display = "none"; 
-            document.getElementById('healthBars').style.display = 'none'; 
+            postBattleChoices.style.display = "none";
+            locationSelection.style.display = "none";
+            npcInteraction.style.display = "none";
+            document.getElementById('healthBars').style.display = 'none';
         }
 
         // Disable all buttons
         function disableAllButtons() {
             const buttons = document.querySelectorAll("button");
             buttons.forEach(button => button.disabled = true);
-            endGameButton.disabled = false; 
+            endGameButton.disabled = false;
         }
 
         // Inventory Display
@@ -648,4 +727,5 @@
         });
     </script>
 </body>
+
 </html>
