@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -178,7 +177,7 @@
         <p id="gameOutput">Welcome to your adventure! Select a character to begin.</p>
 
         <audio id="backgroundMusic" autoplay loop>
-            <source src="song.mp3" type="audio/mp3">
+            <source src="music/master.mp3" type="audio/mp3">
             Your browser does not support the audio element.
         </audio>
 
@@ -500,7 +499,7 @@
         // Function for playing selected track
         const playMusic = (track) => {
             const musicPlayer = document.getElementById("backgroundMusic");
-            musicPlayer.src = `${track}.mp3`; // Assumes track names correspond to mp3 files
+            musicPlayer.src = `music/${track}.mp3`; // Assumes track names correspond to mp3 files in the music folder
             musicPlayer.play();
             document.getElementById("gameOutput").innerText = `Now playing: ${track}!`;
             document.getElementById("musicPopup").style.display = "none"; // Hide the music selection popup after selection
@@ -727,5 +726,4 @@
         });
     </script>
 </body>
-
 </html>
