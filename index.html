@@ -238,7 +238,7 @@
             <h2>Cheats Menu</h2>
             <button id="adonalsiumButton">Play as Adonalsium</button>
             <br><br>
-            <button id="musicButton">Music</button> <!-- Changed from "Play Master of Puppets" to "Music" -->
+            <button id="musicButton">Music</button>
             <br><br>
             <button id="closePopupButton">Close</button>
         </div>
@@ -246,9 +246,9 @@
         <!-- Music Popup -->
         <div id="musicPopup">
             <h2>Select Music</h2>
-            <button id="track1Button">Track 1</button>
-            <button id="track2Button">Track 2</button>
-            <button id="track3Button">Track 3</button>
+            <button id="track1Button">Master of Puppets</button>
+            <button id="track2Button">The Four Horsemen</button>
+            <button id="track3Button">...And Justice for All</button>
             <br><br>
             <button id="closeMusicPopupButton">Close</button>
         </div>
@@ -507,9 +507,9 @@
         };
 
         // Event listeners for music track buttons
-        document.getElementById("track1Button").addEventListener("click", () => playMusic("track1"));
-        document.getElementById("track2Button").addEventListener("click", () => playMusic("track2"));
-        document.getElementById("track3Button").addEventListener("click", () => playMusic("track3"));
+        document.getElementById("track1Button").addEventListener("click", () => playMusic("master"));
+        document.getElementById("track2Button").addEventListener("click", () => playMusic("horsemen"));
+        document.getElementById("track3Button").addEventListener("click", () => playMusic("justice"));
 
         // Save Game
         saveGameButton.addEventListener("click", saveGame);
