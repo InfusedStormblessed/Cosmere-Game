@@ -1,12 +1,27 @@
 /* Global styles */
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --danger-color: #e74c3c;
+    --success-color: #1abc9c;
+    --text-color: #333;
+    --bg-color: #f4f4f4;
+    --header-footer-bg: #35424a;
+}
+
 body {
     font-family: 'Arial', sans-serif;
     line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     transition: background-color 0.5s ease;
+}
+
+body.dark-mode {
+    background-color: #333;
+    color: #f4f4f4;
 }
 
 /* Color themes */
@@ -39,6 +54,44 @@ header {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
+header .logo {
+    font-size: 3em;
+    color: var(--primary-color);
+}
+
+header .navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .navigation ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+header .navigation ul li {
+    margin-right: 20px;
+}
+
+header .navigation a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px 15px;
+    margin: 0 10px;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    border: 1px solid transparent;
+}
+
+header .navigation a:hover {
+    background: var(--link-hover-bg);
+    border: 1px solid #ffffff;
+    transform: translateY(-3px);
+}
+
 h1 {
     margin: 0;
     font-size: 2.5em;
@@ -48,6 +101,9 @@ h1 {
 /* Navigation styles */
 nav {
     margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 nav a {
@@ -66,6 +122,44 @@ nav a:hover {
     transform: translateY(-3px);
 }
 
+nav .menu-item {
+    position: relative;
+}
+
+nav .menu-item:hover .sub-menu {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+nav .sub-menu {
+    position: absolute;
+    background-color: #ffffff;
+    padding: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+nav .sub-menu li {
+    margin-bottom: 10px;
+}
+
+nav .sub-menu a {
+    color: #333;
+    text-decoration: none;
+    padding: 10px 15px;
+    margin: 0;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    border: 1px solid transparent;
+}
+
+nav .sub-menu a:hover {
+    background: var(--link-hover-bg);
+    border: 1px solid #333;
+    transform: translateY(-3px);
+}
+
 /* Main content styles */
 main {
     max-width: 800px;
@@ -81,6 +175,37 @@ main:hover {
     transform: translateY(-2px);
 }
 
+main .content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+main .card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 10px;
+    transition: transform 0.3s, box-shadow 0.2s ease;
+}
+
+main .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+main .card-content {
+    padding: 10px;
+    background: #ffffff;
+    border-radius: 10px;
+    transition: transform 0.3s, box-shadow 0.2s ease;
+}
+
+main .card-content:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
 /* Headings */
 h2 {
     color: var(--text-color);
@@ -89,14 +214,24 @@ h2 {
     padding-bottom: 5px;
 }
 
+h3 {
+    color: var(--text-color);
+    margin-top: 10px;
+    padding-bottom: 5px;
+}
+
 /* Paragraphs */
 p {
     margin: 10px 0;
 }
 
+p strong {
+    font-weight: bold;
+}
+
 /* Button styles */
 button {
-    background: var(--header-footer-bg);
+    background: var(--primary-color);
     color: #ffffff;
     border: none;
     padding: 10px 15px;
@@ -107,9 +242,24 @@ button {
 }
 
 button:hover {
-    background: var(--link-hover-bg);
+    background: var(--success-color);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     animation: pulse 0.5s infinite;
+}
+
+button:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+button[type="button"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+button[type="submit"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--success-color);
 }
 
 /* Footer styles */
@@ -122,6 +272,16 @@ footer {
     bottom: 0;
     width: 100%;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+}
+
+footer .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+footer .footer-link {
+    margin: 10px;
 }
 
 /* Responsive styles */
@@ -184,59 +344,7 @@ header, footer {
     animation: fadeIn 1s ease;
 }
 
-/* Utility classes for additional styling options */
-.text-center {
-    text-align: center;
+header .logo {
+    animation: rotate 1s infinite;
 }
 
-.mt-20 {
-    margin-top: 20px;
-}
-
-.mb-20 {
-    margin-bottom: 20px;
-}
-
-.p-10 {
-    padding: 10px;
-}
-
-/* Additional utility classes */
-.clearfix::after {
-    content: "";
-    clear: both;
-    display: table;
-}
-
-.hidden {
-    display: none;
-}
-
-/* Box shadow variations */
-.shadow-sm {
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.shadow-lg {
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-/* Gradient backgrounds */
-.gradient-bg {
-    background: linear-gradient(to right, rgba(255, 87, 34, 0.7), rgba(255, 193, 7, 0.7));
-    color: #ffffff;
-}
-
-/* Flex container styles */
-.flex {
-    display: flex;
-}
-
-.flex-center {
-    justify-content: center;
-    align-items: center;
-}
-
-.flex-column {
-    flex-direction: column;
-}
