@@ -248,6 +248,13 @@
             <button id="track1Button">Master of Puppets</button>
             <button id="track2Button">The Four Horsemen</button>
             <button id="track3Button">...And Justice for All</button>
+            <button id="burnButton">You Must Burn!</button>
+            <button id="remorseButton">No Remorse</button>
+            <button id="ironmanButton">Iron Man</button>
+            <button id="abracadavreButton">Abracadavre</button>
+            <button id="sadbuttrueButton">Sad But True</button>
+            <button id="lullabyButton">Lullaby of a Dead Man</button>
+            <button id="oneonefiveButton">115</button>
             <br><br>
             <button id="closeMusicPopupButton">Close</button>
         </div>
@@ -500,6 +507,7 @@
         const playMusic = (track) => {
             const musicPlayer = document.getElementById("backgroundMusic");
             musicPlayer.src = `music/${track}.mp3`; // Assumes track names correspond to mp3 files in the music folder
+            musicPlayer.load();
             musicPlayer.play();
             document.getElementById("gameOutput").innerText = `Now playing: ${track}!`;
             document.getElementById("musicPopup").style.display = "none"; // Hide the music selection popup after selection
@@ -509,6 +517,13 @@
         document.getElementById("track1Button").addEventListener("click", () => playMusic("master"));
         document.getElementById("track2Button").addEventListener("click", () => playMusic("horsemen"));
         document.getElementById("track3Button").addEventListener("click", () => playMusic("justice"));
+        document.getElementById("burnButton").addEventListener("click", () => playMusic("burn"));
+        document.getElementById("remorseButton").addEventListener("click", () => playMusic("remorse"));
+        document.getElementById("ironmanButton").addEventListener("click", () => playMusic("ironman"));
+        document.getElementById("abracadavreButton").addEventListener("click", () => playMusic("Abracadavre"));
+        document.getElementById("sadbuttrueButton").addEventListener("click", () => playMusic("sadbuttrue"));
+        document.getElementById("lullabyButton").addEventListener("click", () => playMusic("lullaby"));
+        document.getElementById("oneonefiveButton").addEventListener("click", () => playMusic("115"));
 
         // Save Game
         saveGameButton.addEventListener("click", saveGame);
@@ -672,58 +687,54 @@
             if (currentLoreIndex < lore.length) {
                 return lore[currentLoreIndex++];
             } else {
-                return "You've heard all the story from the NPC.";
-            }
+                return "You've heard all the story from the NPC.";    // Get Stormlight Lore - Updated for 10 sections
+    function getStormlightLore() {
+        const lore = [
+            "In the tumultuous land of Roshar, where fierce storms shape the terrain and the very essence of life, destinies intertwine in unexpected ways. Dalinar Kholin, the valiant high prince burdened by his past, grapples with unsettling visions that warn of impending doom. Amidst rising tensions among warring factions, Dalinar seeks to unify his people against a common threat, driven by a sense of honor and the desire to protect his family and realm. His struggle is compounded by questions of leadership and trust, as old rivalries threaten to unravel the fragile alliances he hopes to build.",
+            "Across the span of the continent, Kaladin Stormblessed rises from the depths of despair. Once a soldier and now a slave, he becomes a beacon of hope for those around him. Bonding with Sylphrena, a spren of light and honor, Kaladin discovers his innate abilities as a Windrunner, harnessing the power of the storms to shield and uplift his newfound comrades. Meanwhile, Shallan Davar embarks on her own journey, seeking knowledge and grappling with her painful past as she unearths secrets hidden within the ancient texts of her ancestors. As the threat of the Voidbringers looms on the horizon, their paths converge, fated to play pivotal roles in the unfolding saga of a world teetering on the brink of destruction.",
+            "In Words of Radiance, the storm-lashed world of Roshar pulses with tension as its heroes grapple with the weight of their destinies. Dalinar Kholin, now a nascent leader of the coalition to combat the looming threat of the Voidbringers, finds himself haunted by the visions of the Almighty. The specters of the past and the harsh realities of war force him to confront not only his own doubts but also the disunity among the Highprinces. As he strives to bring together a fractured society, the stakes grow desperate, not just for himself but for the future of his kingdom, the very soul of which hangs in the balance.",
+            "Meanwhile, Kaladin Stormblessed embraces his role as a protector, having accepted the mantle of a Knight Radiant. As he trains a new generation of warriors beneath the tumultuous skies, he navigates the complexities of leadership and loyalty while wrestling with his own self-doubt. With Sylphrena at his side, Kaladin strives to uplift those around him, but personal and external battles loom large, threatening to engulf him. Across the realms, Shallan Davar pursues her quest for truth, struggling with her fractured identity and the secrets that could alter the fate of Roshar. As battles rage and ancient truths are unveiled, the paths of these characters converge, setting the stage for a clash that could reshape their world forever.",
+            "In Oathbringer, the tumultuous saga of Roshar escalates as the heroes must confront the deep scars of their pasts while preparing for an impending cataclysm. Dalinar Kholin, now a fully realized leader, faces the daunting task of uniting an increasingly fractured coalition against the looming threat of the Voidbringers. Haunted by the burden of his memories, Dalinar seeks to reconcile his violent history while striving to instill a sense of honor and unity among the disparate factions. His journey brings him face to face with the truths of his own mistakes and the implications of power, forcing him to redefine his legacy as he grapples with the nature of leadership and redemption.",
+            "Meanwhile, Kaladin Stormblessed continues to navigate the complexities of his role as a protector and a Knight Radiant, grappling with the weight of his own expectations and responsibilities. As tensions rise both within and outside his circle, Kaladin must confront his fears and insecurities while striving to shield those he loves from the encroaching darkness. At the same time, Shallan Davar delves deeper into her own fractured psyche, struggling to embrace her identity as a Radiant and uncovering the hidden truths of her past. As the battles grow fiercer and tumultuous storms sweep across the land, the entwined fates of these characters drive the narrative toward an epic confrontation, challenging not only their bonds but also the very foundations of their world.",
+            "In Rhythm of War, the struggle against the Voidbringers intensifies as the various factions of Roshar confront both external threats and internal divisions. Dalinar Kholin, determined to unite a fractured alliance, grapples with the complexities of leadership while facing the haunting remnants of his past. As he seeks to instill a sense of honor among the nations, Dalinar's journey becomes one of redemption and understanding, raising questions about the true cost of power and the sacrifices required for lasting unity.",
+            "Amidst this turmoil, Kaladin Stormblessed strives to protect those he loves while dealing with his own mental health challenges in the face of ongoing conflict. As he confronts the weight of expectations placed upon him, Kaladin seeks a balance between his role as a protector and the toll that responsibility takes on his spirit. Concurrently, Shallan Davar embarks on a path of self-discovery, grappling with her fractured identity and the myriad aspects of herself as a Knight Radiant. These intertwined journeys underscore the themes of friendship, sacrifice, and the complex nature of heroism, as the characters navigate their personal battles alongside the overarching fight against the encroaching darkness.",
+            "The Unmade are ancient and powerful beings that threaten the world and have connections to the Voidbringers.",
+            "The Way of Kings introduces the concept of the bonds between humans and spren, illustrating how they influence each other."
+        ];
+        if (currentLoreIndex < lore.length) {
+            return lore[currentLoreIndex++];
+        } else {
+            return "You've heard all the story from the NPC.";
         }
+    }
 
-        // Get Stormlight Lore - Updated for 10 sections
-        function getStormlightLore() {
-            const lore = [
-                "In the tumultuous land of Roshar, where fierce storms shape the terrain and the very essence of life, destinies intertwine in unexpected ways. Dalinar Kholin, the valiant high prince burdened by his past, grapples with unsettling visions that warn of impending doom. Amidst rising tensions among warring factions, Dalinar seeks to unify his people against a common threat, driven by a sense of honor and the desire to protect his family and realm. His struggle is compounded by questions of leadership and trust, as old rivalries threaten to unravel the fragile alliances he hopes to build.",
-                "Across the span of the continent, Kaladin Stormblessed rises from the depths of despair. Once a soldier and now a slave, he becomes a beacon of hope for those around him. Bonding with Sylphrena, a spren of light and honor, Kaladin discovers his innate abilities as a Windrunner, harnessing the power of the storms to shield and uplift his newfound comrades. Meanwhile, Shallan Davar embarks on her own journey, seeking knowledge and grappling with her painful past as she unearths secrets hidden within the ancient texts of her ancestors. As the threat of the Voidbringers looms on the horizon, their paths converge, fated to play pivotal roles in the unfolding saga of a world teetering on the brink of destruction.",
-                "In Words of Radiance, the storm-lashed world of Roshar pulses with tension as its heroes grapple with the weight of their destinies. Dalinar Kholin, now a nascent leader of the coalition to combat the looming threat of the Voidbringers, finds himself haunted by the visions of the Almighty. The specters of the past and the harsh realities of war force him to confront not only his own doubts but also the disunity among the Highprinces. As he strives to bring together a fractured society, the stakes grow desperate, not just for himself but for the future of his kingdom, the very soul of which hangs in the balance.",
-                "Meanwhile, Kaladin Stormblessed embraces his role as a protector, having accepted the mantle of a Knight Radiant. As he trains a new generation of warriors beneath the tumultuous skies, he navigates the complexities of leadership and loyalty while wrestling with his own self-doubt. With Sylphrena at his side, Kaladin strives to uplift those around him, but personal and external battles loom large, threatening to engulf him. Across the realms, Shallan Davar pursues her quest for truth, struggling with her fractured identity and the secrets that could alter the fate of Roshar. As battles rage and ancient truths are unveiled, the paths of these characters converge, setting the stage for a clash that could reshape their world forever.",
-                "In Oathbringer, the tumultuous saga of Roshar escalates as the heroes must confront the deep scars of their pasts while preparing for an impending cataclysm. Dalinar Kholin, now a fully realized leader, faces the daunting task of uniting an increasingly fractured coalition against the looming threat of the Voidbringers. Haunted by the burden of his memories, Dalinar seeks to reconcile his violent history while striving to instill a sense of honor and unity among the disparate factions. His journey brings him face to face with the truths of his own mistakes and the implications of power, forcing him to redefine his legacy as he grapples with the nature of leadership and redemption.",
-                "Meanwhile, Kaladin Stormblessed continues to navigate the complexities of his role as a protector and a Knight Radiant, grappling with the weight of his own expectations and responsibilities. As tensions rise both within and outside his circle, Kaladin must confront his fears and insecurities while striving to shield those he loves from the encroaching darkness. At the same time, Shallan Davar delves deeper into her own fractured psyche, struggling to embrace her identity as a Radiant and uncovering the hidden truths of her past. As the battles grow fiercer and tumultuous storms sweep across the land, the entwined fates of these characters drive the narrative toward an epic confrontation, challenging not only their bonds but also the very foundations of their world.",
-                "In Rhythm of War, the struggle against the Voidbringers intensifies as the various factions of Roshar confront both external threats and internal divisions. Dalinar Kholin, determined to unite a fractured alliance, grapples with the complexities of leadership while facing the haunting remnants of his past. As he seeks to instill a sense of honor among the nations, Dalinar's journey becomes one of redemption and understanding, raising questions about the true cost of power and the sacrifices required for lasting unity.",
-                "Amidst this turmoil, Kaladin Stormblessed strives to protect those he loves while dealing with his own mental health challenges in the face of ongoing conflict. As he confronts the weight of expectations placed upon him, Kaladin seeks a balance between his role as a protector and the toll that responsibility takes on his spirit. Concurrently, Shallan Davar embarks on a path of self-discovery, grappling with her fractured identity and the myriad aspects of herself as a Knight Radiant. These intertwined journeys underscore the themes of friendship, sacrifice, and the complex nature of heroism, as the characters navigate their personal battles alongside the overarching fight against the encroaching darkness.",
-                "The Unmade are ancient and powerful beings that threaten the world and have connections to the Voidbringers.",
-                "The Way of Kings introduces the concept of the bonds between humans and spren, illustrating how they influence each other."
-            ];
-            if (currentLoreIndex < lore.length) {
-                return lore[currentLoreIndex++];
-            } else {
-                return "You've heard all the story from the NPC.";
-            }
-        }
+    // End Game
+    endGameButton.addEventListener("click", () => {
+        endGame("Game over. Your final level was: " + playerLevel);
+    });
 
-        // End Game
-        endGameButton.addEventListener("click", () => {
-            endGame("Game over. Your final level was: " + playerLevel);
-        });
+    // End game function
+    function endGame(message) {
+        document.getElementById("gameOutput").innerText = message;
+        disableAllButtons();
+        postBattleChoices.style.display = "none";
+        locationSelection.style.display = "none";
+        npcInteraction.style.display = "none";
+        document.getElementById('healthBars').style.display = 'none';
+    }
 
-        // End game function
-        function endGame(message) {
-            document.getElementById("gameOutput").innerText = message;
-            disableAllButtons();
-            postBattleChoices.style.display = "none";
-            locationSelection.style.display = "none";
-            npcInteraction.style.display = "none";
-            document.getElementById('healthBars').style.display = 'none';
-        }
+    // Disable all buttons
+    function disableAllButtons() {
+        const buttons = document.querySelectorAll("button");
+        buttons.forEach(button => button.disabled = true);
+        endGameButton.disabled = false;
+    }
 
-        // Disable all buttons
-        function disableAllButtons() {
-            const buttons = document.querySelectorAll("button");
-            buttons.forEach(button => button.disabled = true);
-            endGameButton.disabled = false;
-        }
-
-        // Inventory Display
-        inventoryButton.addEventListener("click", () => {
-            const inventoryList = playerInventory.length ? playerInventory.join(", ") : "Your inventory is empty.";
-            document.getElementById("gameOutput").innerText = `Your inventory: ${inventoryList}`;
-        });
-    </script>
+    // Inventory Display
+    inventoryButton.addEventListener("click", () => {
+        const inventoryList = playerInventory.length ? playerInventory.join(", ") : "Your inventory is empty.";
+        document.getElementById("gameOutput").innerText = `Your inventory: ${inventoryList}`;
+    });
+</script>
 </body>
 </html>
