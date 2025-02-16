@@ -1,232 +1,126 @@
 /* Global styles */
 :root {
-    --primary-color: #3498db;
-    --secondary-color: #2ecc71;
-    --danger-color: #e74c3c;
-    --success-color: #1abc9c;
-    --text-color: #333;
-    --bg-color: #f4f4f4;
-    --header-footer-bg: #35424a;
+    --primary-color: #3498db; /* A classic blue */
+    --secondary-color: #2ecc71; /* A fresh green */
+    --danger-color: #e74c3c; /* For errors/warnings */
+    --success-color: #27ae60; /* A slightly darker green for success */
+    --text-color: #333; /* Dark gray for text */
+    --bg-color: #f8f9fa; /* Very light gray background */
+    --header-footer-bg: #343a40; /* Darker gray for headers/footers */
+    --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    --transition: all 0.3s ease; /* Smooth transitions */
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Roboto', sans-serif; /* Modern, clean font */
     line-height: 1.6;
     margin: 0;
-    padding: 0;
     background-color: var(--bg-color);
     color: var(--text-color);
-    transition: background-color 0.5s ease;
+    transition: var(--transition);
 }
 
-body.dark-mode {
-    background-color: #333;
-    color: #f4f4f4;
-}
-
-/* Color themes */
+/* Color themes (Simplified) */
 .theme-light {
-    --bg-color: #f4f4f4;
+    --bg-color: #f8f9fa;
     --text-color: #333;
-    --header-footer-bg: #35424a;
-    --link-hover-bg: #49a6e0;
+    --header-footer-bg: #343a40;
 }
 
 .theme-dark {
-    --bg-color: #333;
-    --text-color: #f4f4f4;
-    --header-footer-bg: #222;
-    --link-hover-bg: #ff5722;
-}
-
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
+    --bg-color: #212529; /* Darker background */
+    --text-color: #f8f9fa;
+    --header-footer-bg: #343a40;
 }
 
 /* Header styles */
 header {
     background: var(--header-footer-bg);
     color: #ffffff;
-    padding: 20px 0;
+    padding: 1rem 0; /* Use rem for scalable units */
     text-align: center;
-    animation: fadeIn 1s ease;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--box-shadow);
 }
 
-header .logo {
-    font-size: 3em;
+.logo {
+    font-size: 2.5rem; /* Slightly smaller logo */
     color: var(--primary-color);
+    font-weight: 600; /* Semi-bold logo */
+    margin-bottom: 0.5rem; /* Space below the logo */
 }
 
-header .navigation {
+nav {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center; /* Center the navigation */
 }
 
-header .navigation ul {
+nav ul {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
 }
 
-header .navigation ul li {
-    margin-right: 20px;
-}
-
-header .navigation a {
-    color: #ffffff;
-    text-decoration: none;
-    padding: 10px 15px;
-    margin: 0 10px;
-    transition: all 0.3s ease;
-    border-radius: 5px;
-    border: 1px solid transparent;
-}
-
-header .navigation a:hover {
-    background: var(--link-hover-bg);
-    border: 1px solid #ffffff;
-    transform: translateY(-3px);
-}
-
-h1 {
-    margin: 0;
-    font-size: 2.5em;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-/* Navigation styles */
-nav {
-    margin: 10px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+nav li {
+    margin: 0 1rem; /* Consistent spacing */
 }
 
 nav a {
     color: #ffffff;
     text-decoration: none;
-    padding: 10px 15px;
-    margin: 0 10px;
-    transition: all 0.3s ease;
-    border-radius: 5px;
-    border: 1px solid transparent;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    transition: var(--transition);
 }
 
 nav a:hover {
-    background: var(--link-hover-bg);
-    border: 1px solid #ffffff;
-    transform: translateY(-3px);
+    background-color: rgba(255, 255, 255, 0.1); /* Subtle hover background */
 }
 
-nav .menu-item {
-    position: relative;
-}
-
-nav .menu-item:hover .sub-menu {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-nav .sub-menu {
-    position: absolute;
-    background-color: #ffffff;
-    padding: 10px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-}
-
-nav .sub-menu li {
-    margin-bottom: 10px;
-}
-
-nav .sub-menu a {
-    color: #333;
-    text-decoration: none;
-    padding: 10px 15px;
-    margin: 0;
-    transition: all 0.3s ease;
-    border-radius: 5px;
-    border: 1px solid transparent;
-}
-
-nav .sub-menu a:hover {
-    background: var(--link-hover-bg);
-    border: 1px solid #333;
-    transform: translateY(-3px);
-}
 
 /* Main content styles */
 main {
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
+    max-width: 960px; /* Wider content area */
+    margin: 2rem auto;
+    padding: 2rem;
     background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
+    border-radius: 0.75rem;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
 }
 
 main:hover {
-    transform: translateY(-2px);
+    transform: translateY(-4px); /* More pronounced hover effect */
 }
 
-main .content {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-main .card {
+.card {
     background: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    margin: 10px;
-    transition: transform 0.3s, box-shadow 0.2s ease;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    margin: 1rem;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
 }
 
-main .card:hover {
+.card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-main .card-content {
-    padding: 10px;
-    background: #ffffff;
-    border-radius: 10px;
-    transition: transform 0.3s, box-shadow 0.2s ease;
-}
-
-main .card-content:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow on hover */
 }
 
 /* Headings */
-h2 {
+h1, h2, h3 {
     color: var(--text-color);
-    margin-top: 20px;
-    border-bottom: 2px solid var(--header-footer-bg);
-    padding-bottom: 5px;
+    margin-bottom: 1rem;
 }
 
-h3 {
-    color: var(--text-color);
-    margin-top: 10px;
-    padding-bottom: 5px;
+h2 {
+    border-bottom: 2px solid var(--primary-color); /* Use primary color for the line */
+    padding-bottom: 0.5rem;
 }
 
 /* Paragraphs */
 p {
-    margin: 10px 0;
-}
-
-p strong {
-    font-weight: bold;
+    margin-bottom: 1rem;
 }
 
 /* Button styles */
@@ -234,117 +128,41 @@ button {
     background: var(--primary-color);
     color: #ffffff;
     border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
     cursor: pointer;
-    transition: all 0.3s ease, box-shadow 0.2s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: var(--transition);
+    box-shadow: var(--box-shadow);
 }
 
 button:hover {
-    background: var(--success-color);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    animation: pulse 0.5s infinite;
-}
-
-button:active {
-    transform: translateY(2px);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-}
-
-button[type="button"]:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px var(--primary-color);
-}
-
-button[type="submit"]:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px var(--success-color);
+    background: var(--secondary-color); /* Use secondary color on hover */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
 
 /* Footer styles */
 footer {
     text-align: center;
-    padding: 20px 0;
+    padding: 1rem 0;
     background: var(--header-footer-bg);
     color: #ffffff;
-    position: relative;
-    bottom: 0;
-    width: 100%;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--box-shadow);
 }
 
-footer .footer-links {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-footer .footer-link {
-    margin: 10px;
-}
-
-/* Responsive styles */
+/* Responsive styles (Improved) */
 @media (max-width: 768px) {
-    h1 {
-        font-size: 2em;
+    nav ul {
+        flex-direction: column; /* Stack navigation vertically */
     }
-    
-    p {
-        font-size: 0.9em;
+
+    nav li {
+        margin: 0.5rem 0; /* Adjust spacing */
     }
-    
-    nav a {
-        padding: 8px 12px;
-    }
-    
-    button {
-        width: 100%;
-        padding: 12px;
+
+    .card {
+        margin: 1rem 0; /* Remove side margins on smaller screens */
     }
 }
 
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
 
-@keyframes pulse {
-    from {
-        transform: scale(1);
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    
-    to {
-        transform: scale(1.1);
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    }
-}
-
-@keyframes rotate {
-    from {
-        transform: rotate(0deg);
-    }
-    
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* Applying animations to elements */
-header, footer {
-    animation: fadeIn 1s ease;
-}
-
-header .logo {
-    animation: rotate 1s infinite;
-}
-
+/* Removed Animations:  Animations can be distracting.  It's better to use them sparingly and intentionally.  If you want to add them back, do so thoughtfully.  For example, a subtle hover animation on buttons is often nice.  The rotating logo was probably too much.  The fade-in on the header/footer is okay, but I'd consider making it a little faster. */
