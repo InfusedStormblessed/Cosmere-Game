@@ -70,13 +70,12 @@ nav a {
     text-decoration: none;
     padding: 0.75rem 1.25rem;
     border-radius: 0.5rem;
-    transition: var(--transition);
+    transition: var (--transition);
 }
 
 nav a:hover {
     background-color: rgba(255, 255, 255, 0.1); /* Subtle hover background */
 }
-
 
 /* Main content styles */
 main {
@@ -164,5 +163,82 @@ footer {
     }
 }
 
+/* Removed Animations:  Animations can be distracting.  It's better to use them sparingly and intentionally.  If you want to add them back, do so thoughtfully.  For example, a subtle hover animat[...]
+*/
 
-/* Removed Animations:  Animations can be distracting.  It's better to use them sparingly and intentionally.  If you want to add them back, do so thoughtfully.  For example, a subtle hover animation on buttons is often nice.  The rotating logo was probably too much.  The fade-in on the header/footer is okay, but I'd consider making it a little faster. */
+/* Sprite shapes */
+.sprite {
+    width: 50px; /* Default width */
+    height: 50px; /* Default height */
+    position: relative;
+    display: inline-block;
+}
+
+.sprite.circle {
+    border-radius: 50%;
+    background-color: var(--primary-color);
+}
+
+.sprite.square {
+    background-color: var(--secondary-color);
+}
+
+.sprite.triangle-up {
+    width: 0;
+    height: 0;
+    border-left: 25px solid transparent;
+    border-right: 25px solid transparent;
+    border-bottom: 50px solid var(--danger-color);
+}
+
+.sprite.triangle-down {
+    width: 0;
+    height: 0;
+    border-left: 25px solid transparent;
+    border-right: 25px solid transparent;
+    border-top: 50px solid var(--success-color);
+}
+
+/* Character shapes */
+.character {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.character .head {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.character .body {
+    width: 30px;
+    height: 50px;
+    background-color: var(--secondary-color);
+}
+
+.character .arms {
+    position: absolute;
+    top: 20px;
+    left: -10px;
+    width: 50px;
+    height: 10px;
+    background-color: var(--secondary-color);
+}
+
+.character .legs {
+    display: flex;
+    justify-content: space-between;
+    width: 30px;
+}
+
+.character .legs .leg {
+    width: 10px;
+    height: 30px;
+    background-color: var(--danger-color);
+}
